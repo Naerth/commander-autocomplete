@@ -30,7 +30,7 @@ export function autocompletion(..._args: any[]) {
 
     if (autoCompleteWords.length > 0) {
         if (
-            lastWord === undefined
+            wPrevious.length === 0
             || activeCommand.name() === lastWord
             || autoCompleteWords.some(cmd => cmd.includes(lastWord) && cmd !== lastWord)
         )
