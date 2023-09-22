@@ -19,7 +19,7 @@ bun install @naerth/commander-autocomplete
 ## Usage
 To use commander-autocomplete, you need to add the following code to your Commander.js-based CLI application:
 
-autocomplete with subcommands
+### Autocomplete with subcommands
 
 ```javascript
 import { program, useautocomplete } from "@naerth/commander-autocomplete";
@@ -47,7 +47,7 @@ example hello[tab]
 world
 ```
 
-Programmatic autocomplete
+### Programmatic autocomplete
 
 ```javascript
 import { program, useautocomplete } from "@naerth/commander-autocomplete";
@@ -75,7 +75,7 @@ world universe
 
 Both autocomplete usage can be used together.
 
-## autocomplete in a terminal
+## Autocomplete in a terminal
 
 To use autocomplete in a terminal:
 
