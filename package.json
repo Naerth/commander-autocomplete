@@ -4,7 +4,6 @@
   "module": "./src/index.ts",
   "type": "module",
   "description": "Small utility that add autocompletion for commander",
-  "private": true,
   "keywords": [
     "commander",
     "autocompletion"
