@@ -1,6 +1,8 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import os from 'os';
+import { autocompletionDir, bashrcFile, getAutocompleteFile } from './fileSystem';
+import getCompletionBlock from './get-completion-block';
 
 const generateBashTemplate = (bin_name: string) => `
 function ${bin_name}_comp() {
@@ -28,10 +30,15 @@ complete -F "${bin_name}_completion" ${bin_name}
  * @param bin_name 
  */
 export async function setupBash(bin_name: string) {
-    const completionFile = join(os.homedir(), ".autocomplete", `${bin_name}`)
+
+
+    await fs.mkdir(autocompletionDir, { mode: 0o755, recursive: true });
+    const completionFile = getAutocompleteFile(bin_name);
+
     console.log(`Write ${completionFile}`);
     await fs.writeFile(completionFile, generateBashTemplate(bin_name));
 
-    await fs.appendFile("~/.bashrc", `source ${completionFile.replace(os.homedir(), "~")}`);
+    console.log(`Write .bashrc`);
+    await fs.appendFile(bashrcFile, getCompletionBlock(completionFile));
 
 }

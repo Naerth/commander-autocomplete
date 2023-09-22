@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { program, useAutocompletion } from "../src";
 
 program.name("continew")
