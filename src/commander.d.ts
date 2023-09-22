@@ -6,9 +6,10 @@ declare module "commander" {
     export interface Command {
         readonly autocompleteHandler: AutocompletionHandler;
         autocompletion(handler: AutocompletionHandler): Command;
-        isHidden(): boolean;
         autocomplete(): Promise<string[]>;
         parent: Command | null;
         private _executableFile?: string;
+        private _hidden?: boolean;
+        enableAutocompletion(): void;
     }
 }

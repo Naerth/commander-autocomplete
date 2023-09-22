@@ -1,7 +1,11 @@
 import { mkdirSync, writeFileSync } from 'fs';
-import { autocompletionDir, bashrcFile, getAutocompleteFile } from './fileSystem';
-import getCompletionBlock from './get-completion-block';
+import { getCompletionBlock, autocompletionDir, bashrcFile, getAutocompleteFile } from './helpers';
 
+/**
+ * Template for bash autocomplete
+ * @param bin_name 
+ * @returns 
+ */
 const generateBashTemplate = (bin_name: string) => `
 function ${bin_name}_comp() {
     
@@ -24,8 +28,8 @@ complete -F "${bin_name}_completion" ${bin_name}
 `;
 
 /**
- * Install autocomplete file
- * @param bin_name 
+ * Create and write autocomplete file
+ * @param bin_name name of binary
  */
 export function setupBash(bin_name: string) {
 

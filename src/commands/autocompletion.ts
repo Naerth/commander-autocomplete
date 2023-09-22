@@ -1,10 +1,14 @@
+import { getVisibleCommands } from "../utils/helpers";
 import { Command } from "./command";
 
-const getVisibleCommands = (command: Command) => command.commands.filter(cmd => !cmd.isHidden())
+/**
+ * Provides autocompletion for command-line interfaces built with the Commander.js library.
+ * @param commanderArgs - The arguments passed to the autocompletion function.
+ * @returns A promise that resolves to an array of strings to be used for autocompletion.
+ */
+export async function autocompletion(...commanderArgs: any[]) {
 
-export async function autocompletion(..._args: any[]) {
-
-    const { parent, args } = (_args.pop() as Command);
+    const { parent, args } = (commanderArgs.pop() as Command);
 
     const wPrevious = [...args.splice(1)];
     const lastWord = wPrevious.slice(-1)[0];
