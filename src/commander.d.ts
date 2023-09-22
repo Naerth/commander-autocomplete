@@ -2,12 +2,12 @@ import 'commander';
 
 declare module "commander" {
 
-    export type AutocompletionHandler = (() => string[]) | undefined;
+    export type AutocompletionHandler = (() => string[]) | (() => Promise<string[]>) | undefined;
     export interface Command {
         readonly autocompleteHandler: AutocompletionHandler;
         autocompletion(handler: AutocompletionHandler): Command;
         isHidden(): boolean;
-        autocomplete(): string[];
+        autocomplete(): Promise<string[]>;
         parent: Command | null;
         private _executableFile?: string;
     }

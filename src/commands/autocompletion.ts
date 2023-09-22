@@ -2,7 +2,7 @@ import { Command } from "./command";
 
 const getVisibleCommands = (command: Command) => command.commands.filter(cmd => !cmd.isHidden())
 
-export function autocompletion(..._args: any[]) {
+export async function autocompletion(..._args: any[]) {
 
     const { parent, args } = (_args.pop() as Command);
 
@@ -25,7 +25,7 @@ export function autocompletion(..._args: any[]) {
 
     const autoCompleteWords = [
         ...getVisibleCommands(activeCommand).map(leaf => leaf.name()),
-        ...activeCommand.autocomplete?.() ?? []
+        ...await activeCommand.autocomplete?.() ?? []
     ];
 
     if (autoCompleteWords.length > 0) {

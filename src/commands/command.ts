@@ -19,8 +19,8 @@ export class Command extends CommanderCommand {
         return !!this.hidden;
     }
 
-    public autocomplete() {
-        return this.autocompleteHandler?.() ?? [];
+    public async autocomplete() {
+        return await this.autocompleteHandler?.() ?? [];
     }
 
     createCommand(name: string): Command {
