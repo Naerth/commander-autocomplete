@@ -3,7 +3,7 @@ import 'commander';
 declare module "commander" {
 
     export interface Command {
-        public _hidden?: boolean;
+        _hidden?: boolean;
         onAutocomplete?: () => string[];
     }
 
