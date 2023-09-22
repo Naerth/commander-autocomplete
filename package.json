@@ -22,6 +22,10 @@
     "import": "./src/index.ts",
     "require": "./src/index.ts"
   },
+  "files": [
+    "./src/**/*",
+    "./tsconfig.json"
+  ],
   "scripts": {
     "yarn": "bun install --yarn",
     "build": "bun run build:esm && bun run build:cjs",
