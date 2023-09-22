@@ -81,12 +81,14 @@ To use autocomplete in a terminal:
 
 ```bash
 example --setup
+source ~/.bashrc
 ```
 
 To disable autocomplete:
 
 ```bash
 example --cleanup
+source ~/.bashrc
 ```
 ## Limitation
 Currently, commander-autocomplete only supports autocomplete for commands.
