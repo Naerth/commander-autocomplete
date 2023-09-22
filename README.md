@@ -27,7 +27,7 @@ program.command("world").action(() => {
   console.log("Hello, world!");
 });
 
-// Create special command completion
+// enable autocompletion
 await useAutocompletion(program);
 ```
 This will enable autocompletion for your CLI application.
