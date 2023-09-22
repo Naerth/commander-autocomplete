@@ -36,7 +36,8 @@
     "build:bun:esm": "bun build --format esm --target=bun ./src/index.ts --outfile=./dist/esm/bun/autocompletion.js",
     "build:node:cjs": "exit;bun build --format cjs --target=node ./src/index.ts --outfile=./dist/cjs/node/autocompletion.js",
     "build:bun:cjs": "exit;bun build --format cjs --target=bun ./src/index.ts --outfile=./dist/cjs/bun/autocompletion.js",
-    "postbuild": "tsc -p ./tsconfig.build.json"
+    "postbuild": "tsc -p ./tsconfig.build.json",
+    "publish": "npm publish --access public"
   },
   "devDependencies": {
     "bun-types": "latest",
