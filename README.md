@@ -1,6 +1,6 @@
 # commander-autocomplete
 
-commander-autocomplete is a Node.js module that provides autocomplete for command-line interfaces built with the [Commander.js](https://github.com/tj/commander.js) library.
+commander-autocomplete is module that provides autocomplete for command-line interfaces built with the [Commander.js](https://github.com/tj/commander.js) library.
 
 ## Installation
 You can install commander-autocomplete using npm, yarn, or bun:
