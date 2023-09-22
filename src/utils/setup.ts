@@ -1,6 +1,4 @@
-import { promises as fs } from 'fs';
-import { join } from 'path';
-import os from 'os';
+import { mkdirSync, writeFileSync } from 'fs';
 import { autocompletionDir, bashrcFile, getAutocompleteFile } from './fileSystem';
 import getCompletionBlock from './get-completion-block';
 
@@ -29,16 +27,16 @@ complete -F "${bin_name}_completion" ${bin_name}
  * Install autocomplete file
  * @param bin_name 
  */
-export async function setupBash(bin_name: string) {
+export function setupBash(bin_name: string) {
 
 
-    await fs.mkdir(autocompletionDir, { mode: 0o755, recursive: true });
+    mkdirSync(autocompletionDir, { mode: 0o755, recursive: true });
     const completionFile = getAutocompleteFile(bin_name);
 
     console.log(`Write ${completionFile}`);
-    await fs.writeFile(completionFile, generateBashTemplate(bin_name));
+    writeFileSync(completionFile, generateBashTemplate(bin_name));
 
     console.log(`Write .bashrc`);
-    await fs.appendFile(bashrcFile, getCompletionBlock(completionFile));
+    writeFileSync(bashrcFile, getCompletionBlock(completionFile));
 
 }

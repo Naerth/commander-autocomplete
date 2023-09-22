@@ -1,6 +1,4 @@
-import { promises as fs, existsSync } from 'fs';
-import { join } from 'path';
-import os from 'os';
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { bashrcFile, getAutocompleteFile } from './fileSystem';
 import getCompletionBlock from './get-completion-block';
 
@@ -13,11 +11,11 @@ export async function cleanUpBash(bin_name: string) {
     }
 
     console.log(`Removing ${completionFile}`);
-    await fs.unlink(completionFile);
+    await unlinkSync(completionFile);
 
     console.log(`Removing completion script from ~/.bashrc`);
-    const bashrcContent = await fs.readFile(bashrcFile, { encoding: 'utf-8' });
+    const bashrcContent = await readFileSync(bashrcFile, { encoding: 'utf-8' });
     const completionBlock = getCompletionBlock(completionFile);
-    await fs.writeFile(bashrcFile, bashrcContent.replace(completionBlock, ""));
+    await writeFileSync(bashrcFile, bashrcContent.replace(completionBlock, ""));
 
 }

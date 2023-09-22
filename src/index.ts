@@ -1,5 +1,4 @@
-import { Command } from "commander";
-
+import { Command } from './commands/command';
 
 export * from './commands'
 export * from './utils'
