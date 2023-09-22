@@ -2,16 +2,13 @@ import 'commander';
 
 declare module "commander" {
 
+    export type AutocompletionHandler = (() => string[]) | undefined;
     export interface Command {
-        _hidden?: boolean;
-        onAutocomplete?: () => string[];
-    }
-
-    export interface CommandOptions {
-        onAutocomplete?: () => string[];
-    }
-
-    export interface ExecutableCommandOptions {
-        onAutocomplete?: () => string[];
+        readonly autocompleteHandler: AutocompletionHandler;
+        autocompletion(handler: AutocompletionHandler): Command;
+        isHidden(): boolean;
+        autocomplete(): string[];
+        parent: Command | null;
+        private _executableFile?: string;
     }
 }
