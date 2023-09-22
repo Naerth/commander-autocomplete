@@ -2,23 +2,53 @@
  * Extend Command class from Commander
  * Add onAutocomplete option
  */
-import { CommandOptions, Command as CommanderCommand, ExecutableCommandOptions } from "commander";
+import { autocompleteHandler, CommandOptions, Command as CommanderCommand, ExecutableCommandOptions, ParseOptions } from "commander";
+import { useAutocomplete } from "./useAutocomplete";
 
 export class Command extends CommanderCommand {
 
-    command(nameAndArgs: string, opts?: CommandOptions | undefined): ReturnType<this["createCommand"]>;
-    command(nameAndArgs: string, description: string, opts?: ExecutableCommandOptions | undefined): this;
-    command(nameAndArgs: string, description?: string | CommandOptions, opts?: ExecutableCommandOptions): this | ReturnType<this["createCommand"]> {
+    /**
+     * The autocomplete handler function for the command.
+     */
+    autocompleteHandler: autocompleteHandler;
 
-        if (typeof description === "string") {
-            const cmd = super.command(nameAndArgs, description, opts);
-            cmd.onAutocomplete = opts?.onAutocomplete
-            return cmd;
-        }
-        else {
-            const cmd = super.command(nameAndArgs, description);
-            cmd.onAutocomplete = description?.onAutocomplete
-            return cmd;
-        }
+    /**
+     * Sets the autocomplete handler function for the command.
+     * @param autocompleteHandler - The autocomplete handler function.
+     * @returns The `Command` object to allow for method chaining.
+     * 
+     * @example
+     *  program
+     *      .command("git")
+     *      .autocomplete(() => ["--help", "--version", "clone", "commit", "push"]);
+     */
+    public autocomplete(autocompleteHandler: autocompleteHandler): Command {
+        this.autocompleteHandler = autocompleteHandler;
+        return this;
     }
+
+    /**
+    * Returns a promise that resolves to an array of strings to be used for autocomplete.
+    * @returns A promise that resolves to an array of strings to be used for autocomplete.
+    */
+    public async complete() {
+        return await this.autocompleteHandler?.() ?? [];
+    }
+
+    /**
+     * @override
+     */
+    public createCommand(name: string): Command {
+        return new Command(name);
+    }
+
+     /**
+     * @override
+     * Unable autocomplete
+     */
+    public parse(argv?: readonly string[] | undefined, options?: ParseOptions | undefined): this {
+        useAutocomplete(this);
+        return super.parse(argv, options);
+    }
+
 }

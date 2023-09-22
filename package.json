@@ -1,17 +1,18 @@
 {
-  "name": "@naerth/commander-autocompletion",
-  "version": "0.0.2",
+  "name": "@naerth/commander-autocomplete",
+  "version": "0.0.3",
   "module": "./src/index.ts",
   "main": "./src/index.ts",
   "type": "module",
-  "description": "Small utility that add autocompletion for commander",
+  "description": "Small utility that add autocomplete for commander",
   "keywords": [
     "commander",
-    "autocompletion"
+    "autocompletion",
+    "autocomplete"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Naerth/commander-autocompletion"
+    "url": "https://github.com/Naerth/commander-autocomplete"
   },
   "author": {
     "name": "Naerth",
@@ -32,10 +33,10 @@
     "build": "bun run build:esm && bun run build:cjs",
     "build:esm": "bun run build:node:esm && bun run build:bun:esm",
     "build:cjs": "bun run build:node:cjs && bun run build:bun:cjs",
-    "build:node:esm": "bun build --format esm --target=node ./src/index.ts --outfile=./dist/esm/node/autocompletion.js",
-    "build:bun:esm": "bun build --format esm --target=bun ./src/index.ts --outfile=./dist/esm/bun/autocompletion.js",
-    "build:node:cjs": "exit;bun build --format cjs --target=node ./src/index.ts --outfile=./dist/cjs/node/autocompletion.js",
-    "build:bun:cjs": "exit;bun build --format cjs --target=bun ./src/index.ts --outfile=./dist/cjs/bun/autocompletion.js",
+    "build:node:esm": "bun build --format esm --target=node ./src/index.ts --outfile=./dist/esm/node/autocomplete.js",
+    "build:bun:esm": "bun build --format esm --target=bun ./src/index.ts --outfile=./dist/esm/bun/autocomplete.js",
+    "build:node:cjs": "exit;bun build --format cjs --target=node ./src/index.ts --outfile=./dist/cjs/node/autocomplete.js",
+    "build:bun:cjs": "exit;bun build --format cjs --target=bun ./src/index.ts --outfile=./dist/cjs/bun/autocomplete.js",
     "postbuild": "tsc -p ./tsconfig.build.json",
     "publish": "npm publish --access public"
   },
