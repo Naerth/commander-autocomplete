@@ -1,8 +1,8 @@
 import { cleanupOption, setupOption, setupBash, cleanUpBash } from "../utils";
-import { autocompletion } from "./autocompletion";
+import { autocomplete } from "./autocomplete";
 import { Command } from "./command";
 
-export function useAutocompletion(program: Command) {
+export function useAutocomplete(program: Command) {
 
     program.addOption(setupOption);
     program.addOption(cleanupOption);
@@ -18,5 +18,5 @@ export function useAutocompletion(program: Command) {
         process.exit(0);
     }
 
-    program.command("completion", { hidden: true }).action(autocompletion);
+    program.command("completion", { hidden: true }).action(autocomplete);
 }

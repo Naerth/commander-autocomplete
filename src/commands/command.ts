@@ -2,36 +2,36 @@
  * Extend Command class from Commander
  * Add onAutocomplete option
  */
-import { AutocompletionHandler, CommandOptions, Command as CommanderCommand, ExecutableCommandOptions, ParseOptions } from "commander";
-import { useAutocompletion } from ".";
+import { autocompleteHandler, CommandOptions, Command as CommanderCommand, ExecutableCommandOptions, ParseOptions } from "commander";
+import { useAutocomplete } from "./useAutocomplete";
 
 export class Command extends CommanderCommand {
 
     /**
-     * The autocompletion handler function for the command.
+     * The autocomplete handler function for the command.
      */
-    autocompleteHandler: AutocompletionHandler;
+    autocompleteHandler: autocompleteHandler;
 
     /**
-     * Sets the autocompletion handler function for the command.
-     * @param autocompleteHandler - The autocompletion handler function.
+     * Sets the autocomplete handler function for the command.
+     * @param autocompleteHandler - The autocomplete handler function.
      * @returns The `Command` object to allow for method chaining.
      * 
      * @example
      *  program
      *      .command("git")
-     *      .autocompletion(() => ["--help", "--version", "clone", "commit", "push"]);
+     *      .autocomplete(() => ["--help", "--version", "clone", "commit", "push"]);
      */
-    public autocompletion(autocompleteHandler: AutocompletionHandler): Command {
+    public autocomplete(autocompleteHandler: autocompleteHandler): Command {
         this.autocompleteHandler = autocompleteHandler;
         return this;
     }
 
     /**
-    * Returns a promise that resolves to an array of strings to be used for autocompletion.
-    * @returns A promise that resolves to an array of strings to be used for autocompletion.
+    * Returns a promise that resolves to an array of strings to be used for autocomplete.
+    * @returns A promise that resolves to an array of strings to be used for autocomplete.
     */
-    public async autocomplete() {
+    public async complete() {
         return await this.autocompleteHandler?.() ?? [];
     }
 
@@ -44,10 +44,10 @@ export class Command extends CommanderCommand {
 
      /**
      * @override
-     * Unable autocompletion
+     * Unable autocomplete
      */
     public parse(argv?: readonly string[] | undefined, options?: ParseOptions | undefined): this {
-        useAutocompletion(this);
+        useAutocomplete(this);
         return super.parse(argv, options);
     }
 

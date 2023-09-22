@@ -2,7 +2,7 @@ import { Command } from "../commands/command";
 import { join } from "path";
 import os from 'os';
 
-export const autocompletionDir = join(os.homedir(), ".autocomplete")
+export const autocompleteDir = join(os.homedir(), ".autocomplete")
 export const bashrcFile = join(os.homedir(), ".bashrc");
 
 /**
@@ -13,12 +13,12 @@ export const bashrcFile = join(os.homedir(), ".bashrc");
 export const getVisibleCommands = (command: Command) => command.commands.filter(cmd => !cmd._hidden)
 
 /**
- * Returns the location of the autocompletion file
+ * Returns the location of the autocomplete file
  * @param bin_name The name of the binary
- * @returns The location of the autocompletion file
+ * @returns The location of the autocomplete file
  */
 export function getAutocompleteFile(bin_name: string) {
-    return join(autocompletionDir, bin_name);
+    return join(autocompleteDir, bin_name);
 }
 
 /**
