@@ -19,19 +19,49 @@ bun install @naerth/commander-autocompletion
 ## Usage
 To use commander-autocompletion, you need to add the following code to your Commander.js-based CLI application:
 
+Autocompletion with subcommands
+
 ```javascript
 import { program, useAutocompletion } from "@naerth/commander-autocompletion";
 
 program.name("example");
 
-program.command("world").action(() => {
+const hello = program
+.command("hello")
+.action(() => {
+  console.log("Hello");
+});
+
+hello.command("world").action(() => {
   console.log("Hello, world!");
 });
 
-// enable autocompletion
-await useAutocompletion(program);
+// automatically enable autocompletion
+program.parse()
+
 ```
-This will enable autocompletion for your CLI application.
+
+Programmatic autocompletion
+
+```javascript
+import { program, useAutocompletion } from "@naerth/commander-autocompletion";
+
+program.name("example");
+
+program
+.command("list")
+.autocompletion(async () => ["world", "universe"]) // programmatic autocompletion
+.action(() => {
+  console.log("Hello, world!");
+});
+
+
+// automatically enable autocompletion
+program.parse()
+```
+Both autocompletion can be used together.
+
+## Autocompletion in a terminal
 
 To use autocompletion in a terminal:
 
