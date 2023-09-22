@@ -1,0 +1,15 @@
+{
+  "name": "commander-autocompletion",
+  "module": "./src/index.ts",
+  "type": "module",
+  "scripts": {
+    "yarn": "bun install --yarn"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "commander": "^11.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
