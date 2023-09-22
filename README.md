@@ -2,8 +2,7 @@
 
 commander-autocompletion is a Node.js module that provides autocompletion for command-line interfaces built with the [Commander.js](https://github.com/tj/commander.js) library.
 
-## Installation
-
+## Installation
 You can install commander-autocompletion using npm, yarn, or bun:
 
 ```
@@ -17,8 +16,7 @@ yarn add @naerth/commander-autocompletion
 ```
 bun install @naerth/commander-autocompletion
 ```
-## Usage
-
+## Usage
 To use commander-autocompletion, you need to add the following code to your Commander.js-based CLI application:
 
 ```javascript
@@ -47,7 +45,6 @@ To disable autocompletion:
 example --cleanup
 ```
 ## Limitation
-
 Currently, commander-autocompletion only supports autocompletion for commands.
 Autocompletion for options is not supported yet.
 
