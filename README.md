@@ -6,15 +6,15 @@ commander-autocomplete is module that provides autocomplete for command-line int
 You can install commander-autocomplete using npm, yarn, or bun:
 
 ```
-npm install @naerth/commander-autocomplete
+npm install commander @naerth/commander-autocomplete
 ```
 
 ```
-yarn add @naerth/commander-autocomplete
+yarn add commander @naerth/commander-autocomplete
 ```
 
 ```
-bun install @naerth/commander-autocomplete
+bun install commander @naerth/commander-autocomplete
 ```
 ## Usage
 To use commander-autocomplete, you need to add the following code to your Commander.js-based CLI application:
@@ -22,7 +22,10 @@ To use commander-autocomplete, you need to add the following code to your Comman
 ### Autocomplete with subcommands
 
 ```javascript
-import { program, useautocomplete } from "@naerth/commander-autocomplete";
+
+const { program } = require("@naerth/commander-autocomplete");
+// or
+import { program } from "@naerth/commander-autocomplete";
 
 program.name("example");
 
@@ -50,7 +53,10 @@ world
 ### Programmatic autocomplete
 
 ```javascript
-import { program, useautocomplete } from "@naerth/commander-autocomplete";
+
+const { program } = require("@naerth/commander-autocomplete");
+// or
+import { program } from "@naerth/commander-autocomplete";
 
 program.name("example");
 
