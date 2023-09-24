@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'fs';
-import { getCompletionBlock, autocompleteDir, bashrcFile, getAutocompleteFile } from './helpers';
+import { getCompletionBlock, autocompleteDir, bashrcFile, getAutocompleteFile } from './helpers.js';
 
 /**
  * Template for bash autocomplete

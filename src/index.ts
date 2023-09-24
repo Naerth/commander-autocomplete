@@ -1,7 +1,7 @@
-import { Command } from './commands/command';
+import { Command } from './commands/command.js';
 
-export * from './commands'
-export * from './utils'
+export * from './commands/index.js'
+export * from './utils/index.js'
 
 
 export const program = new Command();

@@ -1,5 +1,5 @@
-import { getVisibleCommands } from "../utils/helpers";
-import { Command } from "./command";
+import { getVisibleCommands } from "../utils/helpers.js";
+import { Command } from "./command.js";
 
 /**
  * Provides autocomplete for command-line interfaces built with the Commander.js library.

@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
-import { getCompletionBlock, bashrcFile, getAutocompleteFile } from './helpers';
+import { getCompletionBlock, bashrcFile, getAutocompleteFile } from './helpers.js';
 
 export async function cleanUpBash(bin_name: string) {
     const completionFile = getAutocompleteFile(bin_name);

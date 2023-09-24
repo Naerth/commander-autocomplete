@@ -1,6 +1,8 @@
-import { cleanupOption, setupOption, setupBash, cleanUpBash } from "../utils";
-import { autocomplete } from "./autocomplete";
-import { Command } from "./command";
+import { cleanUpBash } from "../utils/cleanup.js";
+import { cleanupOption, setupOption } from "../utils/options.js";
+import { setupBash } from "../utils/setup.js";
+import { autocomplete } from "./autocomplete.js";
+import { Command } from "./command.js";
 
 export function useAutocomplete(program: Command) {
 

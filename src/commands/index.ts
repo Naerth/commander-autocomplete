@@ -1,3 +1,3 @@
-export * from './autocomplete';
-export * from './command';
-export * from './useAutocomplete';
+export * from './autocomplete.js';
+export * from './command.js';
+export * from './useAutocomplete.js';

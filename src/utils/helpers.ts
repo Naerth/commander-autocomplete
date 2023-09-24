@@ -1,9 +1,9 @@
-import { Command } from "../commands/command";
+import { Command } from "../commands/command.js";
 import { join } from "path";
-import os from 'os';
+import { homedir } from 'os';
 
-export const autocompleteDir = join(os.homedir(), ".autocomplete")
-export const bashrcFile = join(os.homedir(), ".bashrc");
+export const autocompleteDir = join(homedir(), ".autocomplete")
+export const bashrcFile = join(homedir(), ".bashrc");
 
 /**
  * Get visible commands
@@ -27,5 +27,5 @@ export function getAutocompleteFile(bin_name: string) {
  * @returns The bash completion block to be added to the bash profile
  */
 export function getCompletionBlock(completionFile: string) {
-    return `source ${completionFile.replace(os.homedir(), "~")}\n`
+    return `source ${completionFile.replace(homedir(), "~")}\n`
 }

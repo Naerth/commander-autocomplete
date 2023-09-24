@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "outDir": "./dist/cjs",
+    "module": "commonjs",
+    "target": "es2015",
+    "noEmit": false
+  }
+}

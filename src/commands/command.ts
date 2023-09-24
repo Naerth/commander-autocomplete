@@ -3,7 +3,7 @@
  * Add onAutocomplete option
  */
 import { autocompleteHandler, CommandOptions, Command as CommanderCommand, ExecutableCommandOptions, ParseOptions } from "commander";
-import { useAutocomplete } from "./useAutocomplete";
+import { useAutocomplete } from "./useAutocomplete.js";
 
 export class Command extends CommanderCommand {
 
