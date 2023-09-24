@@ -1,6 +1,6 @@
 {
   "name": "@naerth/commander-autocomplete",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "module": "./dist/esm/index.js",
   "main": "./dist/cjs/index.js",
   "types": "./dist/types/index.d.ts",
@@ -35,11 +35,9 @@
   "scripts": {
     "yarn": "bun install --yarn",
     "clear:dist": "rm -rf ./dist",
-    "build": "bun run clear:dist && bun run build:esm && bun run build:cjs",
-    "build:cjs": "tsc -p ./tsconfig.build.cjs.json",
-    "postbuild:cjs": "bun ./scripts/add-cjs-package-json.ts",
-    "build:esm": "tsc -p ./tsconfig.build.esm.json",
+    "build": "bun run clear:dist && bun run compile",
     "compile": "tsc -b ./tsconfig.build.cjs.json ./tsconfig.build.esm.json ./tsconfig.build.types.json",
+    "postbuild:cjs": "bun ./scripts/add-cjs-package-json.ts",
     "publish": "npm publish --access public"
   },
   "devDependencies": {
