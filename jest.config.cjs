@@ -3,7 +3,7 @@ const config = {
     verbose: true,
     moduleFileExtensions : ["js", "cjs"],
     roots: [
-        "<rootDir>/test"
+        "<rootDir>/tests/node"
     ],
     "testMatch": ["**/node-*.cjs"],
 };

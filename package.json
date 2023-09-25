@@ -39,7 +39,7 @@
     "compile": "tsc -b ./tsconfig.build.cjs.json ./tsconfig.build.esm.json ./tsconfig.build.types.json",
     "postbuild": "bun ./scripts/add-cjs-package-json.ts",
     "publish": "npm publish --access public",
-    "test": "bun test && bun run test:cjs",
+    "test": "bun test --test-name-pattern bun && bun run test:cjs",
     "test:cjs": "jest"
   },
   "devDependencies": {
