@@ -38,7 +38,9 @@
     "build": "bun run clear:dist && bun run compile",
     "compile": "tsc -b ./tsconfig.build.cjs.json ./tsconfig.build.esm.json ./tsconfig.build.types.json",
     "postbuild": "bun ./scripts/add-cjs-package-json.ts",
+    "prepublish": "bun run test",
     "publish": "npm publish --access public",
+    "pretest": "bun run build",
     "test": "bun test --test-name-pattern bun && bun run test:cjs",
     "test:cjs": "jest"
   },
