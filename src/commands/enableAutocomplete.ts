@@ -4,7 +4,7 @@ import { setupBash } from "../utils/setup.js";
 import { autocomplete } from "./autocomplete.js";
 import { Command } from "./command.js";
 
-export function useAutocomplete(program: Command) {
+export function enableAutocomplete(program: Command) {
 
     program.addOption(setupOption);
     program.addOption(cleanupOption);

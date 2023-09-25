@@ -2,15 +2,16 @@
  * Extend Command class from Commander
  * Add onAutocomplete option
  */
-import { autocompleteHandler, CommandOptions, Command as CommanderCommand, ExecutableCommandOptions, ParseOptions } from "commander";
-import { useAutocomplete } from "./useAutocomplete.js";
+import { Command as CommanderCommand, ParseOptions } from "commander";
+import { AutocompleteHandler, AutocompleteHandlerProps } from "../types.js";
+import { enableAutocomplete } from "./enableAutocomplete.js";
 
 export class Command extends CommanderCommand {
 
     /**
      * The autocomplete handler function for the command.
      */
-    autocompleteHandler: autocompleteHandler;
+    private _autocompleteHandler?: AutocompleteHandler;
 
     /**
      * Sets the autocomplete handler function for the command.
@@ -22,8 +23,8 @@ export class Command extends CommanderCommand {
      *      .command("git")
      *      .autocomplete(() => ["--help", "--version", "clone", "commit", "push"]);
      */
-    public autocomplete(autocompleteHandler: autocompleteHandler): Command {
-        this.autocompleteHandler = autocompleteHandler;
+    public autocomplete(autocompleteHandler: AutocompleteHandler): Command {
+        this._autocompleteHandler = autocompleteHandler;
         return this;
     }
 
@@ -31,8 +32,8 @@ export class Command extends CommanderCommand {
     * Returns a promise that resolves to an array of strings to be used for autocomplete.
     * @returns A promise that resolves to an array of strings to be used for autocomplete.
     */
-    public async complete() {
-        return await this.autocompleteHandler?.() ?? [];
+    public async complete(props: AutocompleteHandlerProps) {
+        return await this._autocompleteHandler?.(props) ?? [];
     }
 
     /**
@@ -42,12 +43,12 @@ export class Command extends CommanderCommand {
         return new Command(name);
     }
 
-     /**
-     * @override
-     * Unable autocomplete
-     */
+    /**
+    * @override
+    * Unable autocomplete
+    */
     public parse(argv?: readonly string[] | undefined, options?: ParseOptions | undefined): this {
-        useAutocomplete(this);
+        enableAutocomplete(this);
         return super.parse(argv, options);
     }
 
