@@ -20,5 +20,8 @@ export function enableAutocomplete(program: Command) {
         process.exit(0);
     }
 
-    program.command("completion", { hidden: true }).action(autocomplete);
+    program.command("completion", { hidden: true }).action(async (...args: any[]) => {
+        const words = await autocomplete(...args);
+        if (words) console.log(words.join(" "));
+    });
 }

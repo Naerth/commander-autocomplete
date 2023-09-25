@@ -6,18 +6,15 @@ import { Command } from "./command.js";
  * @param commanderArgs - The arguments passed to the autocomplete function.
  * @returns A promise that resolves to an array of strings to be used for autocomplete.
  */
-export async function autocomplete(...commanderArgs: any[]) {
+export async function autocomplete(...commanderArgs: any[]): Promise<string[] | undefined> {
 
-    const { parent, args } = (commanderArgs.pop() as Command);
-
+    const command = (commanderArgs.pop() as Command);
+    const { parent, args } = command;
     const allWords = [...args.splice(1)];
     const lastWord = allWords.slice(-1)[0];
 
 
-    if (!parent)
-        return;
-
-    let activeCommand: Command = parent;
+    let activeCommand: Command = parent ?? command;
 
     for (let i = 0; i < allWords.length; i++) {
 
@@ -38,6 +35,6 @@ export async function autocomplete(...commanderArgs: any[]) {
             || activeCommand.name() === lastWord
             || autoCompleteWords.some(cmd => cmd.includes(lastWord) && cmd !== lastWord)
         )
-            return console.log(autoCompleteWords.join(" "))
+            return autoCompleteWords;
     }
 }
