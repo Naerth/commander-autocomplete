@@ -6,5 +6,8 @@
     "module": "ESNext",
     "target": "ESNext",
     "noEmit": false
-  }
+  },
+  "exclude": [
+    "./test/**/*"
+  ]
 }

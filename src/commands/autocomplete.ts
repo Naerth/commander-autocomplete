@@ -6,38 +6,35 @@ import { Command } from "./command.js";
  * @param commanderArgs - The arguments passed to the autocomplete function.
  * @returns A promise that resolves to an array of strings to be used for autocomplete.
  */
-export async function autocomplete(...commanderArgs: any[]) {
+export async function autocomplete(...commanderArgs: any[]): Promise<string[] | undefined> {
 
-    const { parent, args } = (commanderArgs.pop() as Command);
+    const command = (commanderArgs.pop() as Command);
+    const { parent, args } = command;
+    const allWords = [...args.splice(1)];
+    const lastWord = allWords.slice(-1)[0];
 
-    const wPrevious = [...args.splice(1)];
-    const lastWord = wPrevious.slice(-1)[0];
 
+    let activeCommand: Command = parent ?? command;
 
-    if (!parent)
-        return;
+    for (let i = 0; i < allWords.length; i++) {
 
-    let activeCommand: Command = parent;
+        const subCommand = getVisibleCommands(activeCommand).find(cmd => cmd.name() === allWords[i]);
 
-    for (let i = 0; i < wPrevious.length; i++) {
-
-        const subLeaf = getVisibleCommands(activeCommand).find(cmd => cmd.name() === wPrevious[i]);
-        if (subLeaf)
-            activeCommand = subLeaf;
+        if (subCommand) activeCommand = subCommand;
 
     }
 
     const autoCompleteWords = [
-        ...getVisibleCommands(activeCommand).map(leaf => leaf.name()),
-        ...await activeCommand.complete?.() ?? []
+        ...getVisibleCommands(activeCommand).map(subCommand => subCommand.name()),
+        ...await activeCommand.complete?.({ lastWord, allWords }) ?? []
     ];
 
     if (autoCompleteWords.length > 0) {
         if (
-            wPrevious.length === 0
+            allWords.length === 0
             || activeCommand.name() === lastWord
             || autoCompleteWords.some(cmd => cmd.includes(lastWord) && cmd !== lastWord)
         )
-            return console.log(autoCompleteWords.join(" "))
+            return autoCompleteWords;
     }
 }

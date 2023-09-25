@@ -4,7 +4,7 @@ import { setupBash } from "../utils/setup.js";
 import { autocomplete } from "./autocomplete.js";
 import { Command } from "./command.js";
 
-export function useAutocomplete(program: Command) {
+export function enableAutocomplete(program: Command) {
 
     program.addOption(setupOption);
     program.addOption(cleanupOption);
@@ -20,5 +20,8 @@ export function useAutocomplete(program: Command) {
         process.exit(0);
     }
 
-    program.command("completion", { hidden: true }).action(autocomplete);
+    program.command("completion", { hidden: true }).action(async (...args: any[]) => {
+        const words = await autocomplete(...args);
+        if (words) console.log(words.join(" "));
+    });
 }

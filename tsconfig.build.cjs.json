@@ -6,5 +6,8 @@
     "module": "commonjs",
     "target": "es2015",
     "noEmit": false
-  }
+  },
+  "exclude": [
+    "./test/**/*"
+  ]
 }
