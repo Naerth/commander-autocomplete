@@ -2,6 +2,7 @@ import { expect, test } from 'bun:test';
 import { join } from 'path';
 
 const program = join(__dirname, "..", "fixtures", "example-program.ts");
+const asyncProgram = join(__dirname, "..", "fixtures", "example-program.ts");
 const testHomeDirectory = join(__dirname, "..", "fixtures", "test-home-dir");
 const testNodeDirectory = join(__dirname, "..", "fixtures", "test-node-dir");
 
@@ -33,6 +34,15 @@ test("bun | autocomplete sync handler", async () => {
 test("bun | autocomplete async handler", async () => {
     const { stdout } = Bun.spawnSync({
         cmd: ["bun", program, "completion", "example", "ls"],
+        cwd: testHomeDirectory,
+        stdout: 'pipe',
+    })
+    expect(stdout.toString()).toBe(".bashrc .ssh\n");
+});
+
+test("bun | autocomplete async parser", async () => {
+    const { stdout } = Bun.spawnSync({
+        cmd: ["bun", asyncProgram, "completion", "example", "ls"],
         cwd: testHomeDirectory,
         stdout: 'pipe',
     })

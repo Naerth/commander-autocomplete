@@ -44,12 +44,19 @@ export class Command extends CommanderCommand {
     }
 
     /**
-    * @override
-    * Unable autocomplete
+    * @override Enable autocomplete
     */
     public parse(argv?: readonly string[] | undefined, options?: ParseOptions | undefined): this {
         enableAutocomplete(this);
         return super.parse(argv, options);
+    }
+
+    /**
+     * @override Enable autocomplete 
+     */
+    public parseAsync(argv?: readonly string[] | undefined, options?: ParseOptions | undefined): Promise<this> {
+        enableAutocomplete(this);
+        return super.parseAsync(argv, options);
     }
 
 }

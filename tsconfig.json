@@ -11,6 +11,7 @@
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
     "types": [
       "bun-types" // add Bun global
     ]
