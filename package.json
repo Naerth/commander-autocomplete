@@ -21,6 +21,12 @@
   },
   "license": "MIT",
   "exports": {
+    "./dev.js": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
     ".": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/esm/index.js",
