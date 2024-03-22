@@ -42,6 +42,6 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
             || activeCommand.name() === lastWord
             || autoCompleteWords.some(cmd => cmd.includes(lastWord) && cmd !== lastWord)
         )
-            return autoCompleteWords;
+            return autoCompleteWords.sort();
     }
 }

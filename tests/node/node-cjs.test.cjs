@@ -17,10 +17,10 @@ test("cjs | autocomplete subcommand", async () => {
 
 test("cjs | autocomplete sync handler", async () => {
     const stdout = execSync(`node ${program} completion example lsSync`, { cwd: testNodeDirectory, stdio: ["pipe"] });
-    expect(stdout.toString()).toBe("dist package.json src yarn.lock\n");
+    expect(stdout.toString()).toBe("--human-readable --reverse -h -r dist package.json src yarn.lock\n");
 });
 
 test("cjs | autocomplete async handler", async () => {
     const stdout = execSync(`node ${program} completion example ls`, { cwd: testHomeDirectory, stdio: ["pipe"] });
-    expect(stdout.toString()).toBe(".bashrc .ssh\n");
+    expect(stdout.toString()).toBe("--all --long -a -l .bashrc .ssh\n");
 });
