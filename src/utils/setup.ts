@@ -1,5 +1,6 @@
 import { mkdirSync, appendFileSync } from 'fs';
 import { getCompletionBlock, autocompleteDir, bashrcFile, getAutocompleteFile } from './helpers.js';
+import { cleanUpBash } from './cleanup.js';
 
 /**
  * Template for bash autocomplete
@@ -33,6 +34,7 @@ complete -F "${bin_name}_completion" ${bin_name}
  */
 export function setupBash(bin_name: string) {
 
+    cleanUpBash(bin_name);
 
     mkdirSync(autocompleteDir, { mode: 0o755, recursive: true });
     const completionFile = getAutocompleteFile(bin_name);

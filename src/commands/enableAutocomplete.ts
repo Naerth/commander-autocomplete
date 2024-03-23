@@ -10,13 +10,19 @@ export function enableAutocomplete(program: Command) {
     program.addOption(cleanupOption);
 
 
+
     if (process.argv.includes(`--${setupOption.name()}`)) {
-        setupBash(program.name())
+        if (!program.name())
+            throw new Error("Program name is required to enable autocomplete");
+
+        setupBash(program.name());
         process.exit(0);
     }
 
     if (process.argv.includes(`--${cleanupOption.name()}`)) {
-        cleanUpBash(program.name())
+        if (!program.name())
+            throw new Error("Program name is required to enable autocomplete");
+        cleanUpBash(program.name());
         process.exit(0);
     }
 
