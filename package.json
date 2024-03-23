@@ -47,7 +47,8 @@
     "prepublish": "bun run test",
     "publish": "npm publish --access public",
     "pretest": "bun run build",
-    "test": "bun test --test-name-pattern bun && bun run test:cjs",
+    "test": "bun run test:mjs && bun run test:cjs",
+    "test:mjs": "bun test",
     "test:cjs": "jest"
   },
   "devDependencies": {

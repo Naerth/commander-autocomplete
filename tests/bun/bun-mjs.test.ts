@@ -1,10 +1,10 @@
 import { expect, test } from 'bun:test';
 import { join } from 'path';
 
-const program = join(__dirname, "..", "fixtures", "example-program.ts");
-const asyncProgram = join(__dirname, "..", "fixtures", "example-program.ts");
-const testHomeDirectory = join(__dirname, "..", "fixtures", "test-home-dir");
-const testNodeDirectory = join(__dirname, "..", "fixtures", "test-node-dir");
+const program = join(import.meta.dir, "..", "fixtures", "example-program.ts");
+const asyncProgram = join(import.meta.dir, "..", "fixtures", "example-program.ts");
+const testHomeDirectory = join(import.meta.dir, "..", "fixtures", "test-home-dir");
+const testNodeDirectory = join(import.meta.dir, "..", "fixtures", "test-node-dir");
 
 test("bun | autocomplete top level command", async () => {
     const { stdout } = Bun.spawnSync({
@@ -28,7 +28,7 @@ test("bun | autocomplete sync handler", async () => {
         cwd: testNodeDirectory,
         stdout: 'pipe',
     })
-    expect(stdout.toString()).toBe("dist package.json src yarn.lock\n");
+    expect(stdout.toString()).toBe("--human-readable --reverse -h -r dist package.json src yarn.lock\n");
 });
 
 test("bun | autocomplete async handler", async () => {
@@ -37,7 +37,7 @@ test("bun | autocomplete async handler", async () => {
         cwd: testHomeDirectory,
         stdout: 'pipe',
     })
-    expect(stdout.toString()).toBe(".bashrc .ssh\n");
+    expect(stdout.toString()).toBe("--all --long -a -l .bashrc .ssh\n");
 });
 
 test("bun | autocomplete async parser", async () => {
@@ -46,5 +46,5 @@ test("bun | autocomplete async parser", async () => {
         cwd: testHomeDirectory,
         stdout: 'pipe',
     })
-    expect(stdout.toString()).toBe(".bashrc .ssh\n");
+    expect(stdout.toString()).toBe("--all --long -a -l .bashrc .ssh\n");
 });

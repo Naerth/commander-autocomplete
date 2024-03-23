@@ -50,6 +50,38 @@ example hello[tab]
 world
 ```
 
+### Autocomplete with options
+
+```javascript
+
+const { program } = require("@naerth/commander-autocomplete");
+// or
+import { program } from "@naerth/commander-autocomplete";
+
+program.name("example");
+
+const hello = program
+  .command("hello")
+  .option('-d, --debug')
+  .action(() => {
+    console.log("Hello");
+  });
+
+hello.command("world").action(() => {
+  console.log("Hello, world!");
+});
+
+// automatically enable autocomplete
+program.parse()
+
+```
+Terminal 
+
+```bash
+example hello[tab]
+-d       --debug  world
+```
+
 ### Programmatic autocomplete
 
 ```javascript
@@ -61,7 +93,8 @@ import { program } from "@naerth/commander-autocomplete";
 program.name("example");
 
 program
-  .command("list")
+  .command("ls")
+  .option("-l, --long", "long listing")
   .autocomplete(async () => ["world", "universe"]) // programmatic autocomplete
   .action(() => {
     console.log("Hello, world!");
@@ -76,10 +109,8 @@ Terminal
 
 ```bash
 example list[tab]
-world universe
+-l        --long    universe  world 
 ```
-
-Both autocomplete usage can be used together.
 
 ## Autocomplete in a terminal
 
@@ -97,8 +128,6 @@ example --cleanup
 source ~/.bashrc
 ```
 ## Limitation
-Currently, commander-autocomplete only supports autocomplete for commands.
-autocomplete for options is not supported yet.
 
 Only Bash is supported at the moment.
 
