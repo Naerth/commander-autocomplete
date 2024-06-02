@@ -97,7 +97,7 @@ export class Command extends CommanderCommand {
      */
     private setup() {
         if (!this.name())
-            throw new Error("this name is required to enable autocomplete");
+            throw new Error("Command name is required to enable autocomplete");
 
         setupBash(this.name());
         process.exit(0);
@@ -110,7 +110,7 @@ export class Command extends CommanderCommand {
      */
     private cleanup() {
         if (!this.name())
-            throw new Error("this name is required to enable autocomplete");
+            throw new Error("Command name is required to enable autocomplete");
         cleanUpBash(this.name());
         process.exit(0);
     }
