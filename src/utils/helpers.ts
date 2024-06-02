@@ -10,7 +10,7 @@ export const bashrcFile = join(homedir(), ".bashrc");
  * @param command 
  * @returns List of visible commands
  */
-export const getVisibleCommands = (command: Command) => command.commands.filter(cmd => !cmd._hidden);
+export const getVisibleCommands = (command: Command) => command.commands.filter(cmd => !cmd.hidden());
 
 /**
  * Get options flags of visible options

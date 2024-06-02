@@ -52,11 +52,13 @@
     "test:cjs": "jest"
   },
   "devDependencies": {
-    "bun-types": "latest",
     "commander": "^11.0.0",
     "jest": "^29.7.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/bun": "^1.1.3"
   }
 }

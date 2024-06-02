@@ -13,7 +13,6 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
     const allWords = args.splice(1);
     const lastWord = allWords.slice(-1)[0];
 
-
     let activeCommand: Command = parent ?? command;
     let activeCommandIdx;
     let excludableFlags: string[] | undefined = undefined;
@@ -21,7 +20,7 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
     for (let i = 0; i < allWords.length; i++) {
         const subCommand = getVisibleCommands(activeCommand).find(cmd => cmd.name() === allWords[i]);
         if (subCommand) {
-            activeCommand = subCommand;
+            activeCommand = (subCommand as Command);
             activeCommandIdx = i;
         }
     }
