@@ -1,16 +1,16 @@
-import { existsSync, readFileSync, unlinkSync, writeFileSync, copyFileSync } from 'fs';
-import { getCompletionBlock, bashrcFile, getAutocompleteFile } from './helpers.js';
+import fs  from 'fs';
+import { bashrcFile, getAutocompleteFile, getCompletionBlock } from './helpers.js';
 
 export function cleanUpBash(bin_name: string) {
     console.log('Cleanup autocompletion');
     const completionFile = getAutocompleteFile(bin_name);
 
-    if (existsSync(completionFile)) {
+    if (fs.existsSync(completionFile)) {
         console.log(`Removing ${completionFile}`);
-        unlinkSync(completionFile);
+        fs.unlinkSync(completionFile);
     }
 
-    const bashrcContent = readFileSync(bashrcFile, { encoding: 'utf-8' });
+    const bashrcContent = fs.readFileSync(bashrcFile, { encoding: 'utf-8' });
     const completionBlock = getCompletionBlock(completionFile);
     const newBashrcContent = bashrcContent.replaceAll(completionBlock, "");
 
@@ -25,7 +25,7 @@ export function cleanUpBash(bin_name: string) {
         console.log(removedLines.join('\n'));
         console.log('-------------------');
         
-        writeFileSync(bashrcFile, newBashrcContent);
+        fs.writeFileSync(bashrcFile, newBashrcContent);
     }
     else {
         console.log('Nothing to remove in .bashrc')

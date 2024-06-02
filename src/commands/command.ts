@@ -68,6 +68,27 @@ export class Command extends CommanderCommand {
     }
 
     /**
+     * Returns an array of visible commands.
+     * A command is considered visible if it is not hidden.
+     *
+     * @returns An array of visible commands.
+     */
+    public getVisibleCommands() {
+        return this.commands.filter(cmd => !cmd.hidden());
+    }
+
+    public getFlags(excludableFlags: string[] = []) {
+        const visibleOptions = this.options.filter(opt => !opt.hidden);
+
+        return visibleOptions.reduce<string[]>((acc, option) => {
+            const flags = option.flags.split(/[,\|\s]+/g).filter(Boolean);
+            if (!flags.some(flag => excludableFlags.includes(flag)))
+                acc.push(...flags);
+            return acc;
+        }, []);
+    }
+
+    /**
      * @override
      */
     public createCommand(name: string): Command {

@@ -1,4 +1,3 @@
-import { getFlags, getVisibleCommands } from "../utils/helpers.js";
 import { Command } from "./command.js";
 
 /**
@@ -18,9 +17,9 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
     let excludableFlags: string[] | undefined = undefined;
 
     for (let i = 0; i < allWords.length; i++) {
-        const subCommand = getVisibleCommands(activeCommand).find(cmd => cmd.name() === allWords[i]);
+        const subCommand = activeCommand.getVisibleCommands().find(cmd => cmd.name() === allWords[i]);
         if (subCommand) {
-            activeCommand = (subCommand as Command);
+            activeCommand = subCommand;
             activeCommandIdx = i;
         }
     }
@@ -29,8 +28,8 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
         excludableFlags = allWords.slice(activeCommandIdx + 1);
 
     const autoCompleteWords = [
-        ...getVisibleCommands(activeCommand).map(subCommand => subCommand.name()),
-        ...getFlags(activeCommand, excludableFlags),
+        ...activeCommand.getVisibleCommands().map(subCommand => subCommand.name()),
+        ...activeCommand.getFlags(excludableFlags),
         ...await activeCommand.complete?.({ lastWord, allWords }) ?? []
     ];
 

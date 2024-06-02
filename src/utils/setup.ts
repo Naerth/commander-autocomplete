@@ -1,4 +1,4 @@
-import { mkdirSync, appendFileSync } from 'fs';
+import fs from 'fs';
 import { getCompletionBlock, autocompleteDir, bashrcFile, getAutocompleteFile } from './helpers.js';
 import { cleanUpBash } from './cleanup.js';
 
@@ -36,13 +36,13 @@ export function setupBash(bin_name: string) {
 
     cleanUpBash(bin_name);
 
-    mkdirSync(autocompleteDir, { mode: 0o755, recursive: true });
+    fs.mkdirSync(autocompleteDir, { mode: 0o755, recursive: true });
     const completionFile = getAutocompleteFile(bin_name);
 
     console.log(`Write ${completionFile}`);
-    appendFileSync(completionFile, generateBashTemplate(bin_name));
+    fs.appendFileSync(completionFile, generateBashTemplate(bin_name));
 
     console.log(`Write .bashrc`);
-    appendFileSync(bashrcFile, getCompletionBlock(completionFile));
+    fs.appendFileSync(bashrcFile, getCompletionBlock(completionFile));
 
 }
