@@ -12,6 +12,7 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
     const allWords = args.splice(1);
     const lastWord = allWords.slice(-1)[0];
 
+
     let activeCommand: Command = parent ?? command;
     let activeCommandIdx;
     let excludableFlags: string[] | undefined = undefined;
@@ -33,13 +34,14 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
         ...await activeCommand.complete?.({ lastWord, allWords }) ?? []
     ];
 
+    let filteredAutocompleteWords: string[] = [];
 
-    if (autoCompleteWords.length > 0) {
-        if (
-            allWords.length === 0
-            || activeCommand.name() === lastWord
-            || autoCompleteWords.some(cmd => cmd.includes(lastWord) && cmd !== lastWord)
-        )
-            return autoCompleteWords.sort();
-    }
+    if (!lastWord || activeCommand.name() === lastWord)
+        filteredAutocompleteWords = autoCompleteWords;
+    else
+        filteredAutocompleteWords = autoCompleteWords.filter(completeWord => completeWord.startsWith(lastWord) && completeWord !== lastWord);
+
+    if (filteredAutocompleteWords.length === 0) return;
+    return filteredAutocompleteWords.sort();
+
 }
