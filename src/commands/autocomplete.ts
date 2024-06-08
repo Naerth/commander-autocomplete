@@ -12,7 +12,6 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
     const allWords = args.splice(1);
     const lastWord = allWords.slice(-1)[0];
 
-
     let activeCommand: Command = parent ?? command;
     let activeCommandIdx;
     let excludableFlags: string[] | undefined = undefined;
@@ -42,6 +41,12 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
         filteredAutocompleteWords = autoCompleteWords.filter(completeWord => completeWord.startsWith(lastWord) && completeWord !== lastWord);
 
     if (filteredAutocompleteWords.length === 0) return;
-    return filteredAutocompleteWords.sort();
+
+    // Sort the autocomplete words so that flags come after commands
+    return filteredAutocompleteWords.sort((a, b) => {
+        if(a.startsWith('-') && !b.startsWith('-')) return 1;
+        if(!a.startsWith('-') && b.startsWith('-')) return -1;
+        return a.localeCompare(b);
+    });
 
 }
