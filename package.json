@@ -29,9 +29,10 @@
     },
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "default": "./dist/esm/index.js"
+      "default": "./dist/node/commander-autocomplete.js",
+      "import": "./dist/node/commander-autocomplete.js",
+      "bun": "./dist/bun/commander-autocomplete.js",
+      "node": "./dist/node/commander-autocomplete.js"
     }
   },
   "files": [
@@ -41,15 +42,12 @@
   "scripts": {
     "yarn": "bun install --yarn",
     "clear:dist": "rm -rf ./dist",
-    "build": "bun run clear:dist && bun run compile",
-    "compile": "tsc -b ./tsconfig.build.cjs.json ./tsconfig.build.esm.json ./tsconfig.build.types.json",
-    "postbuild": "bun ./scripts/add-cjs-package-json.ts",
+    "build": "bun ./scripts/build.ts",
+    "postbuild": "tsc -p ./tsconfig.build.types.json",
     "prepublish": "bun run test",
     "publish": "npm publish --access public",
-    "pretest": "bun run build",
-    "test": "bun run test:mjs && bun run test:cjs",
-    "test:mjs": "bun test",
-    "test:cjs": "jest"
+    "test": "bun test --coverage",
+    "posttest": "bun run build"
   },
   "devDependencies": {
     "commander": "^11.0.0",
