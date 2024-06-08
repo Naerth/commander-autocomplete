@@ -7,3 +7,4 @@ export * from './utils/setup.js';
 
 
 export const program = new Command();
+export { Command };
