@@ -74,18 +74,20 @@ export class Command extends CommanderCommand {
      * @returns An array of visible commands.
      */
     public getVisibleCommands() {
-        return this.commands.filter(cmd => !cmd.hidden());
+        const commands = this.commands.filter(cmd => !cmd.hidden());
+        return commands.toSorted((a, b) => a.name().localeCompare(b.name()));
     }
 
     public getFlags(excludableFlags: string[] = []) {
         const visibleOptions = this.options.filter(opt => !opt.hidden);
-
-        return visibleOptions.reduce<string[]>((acc, option) => {
+        const flags = visibleOptions.reduce<string[]>((acc, option) => {
             const flags = option.flags.split(/[,\|\s]+/g).filter(Boolean);
             if (!flags.some(flag => excludableFlags.includes(flag)))
                 acc.push(...flags);
             return acc;
         }, []);
+
+        return flags.toSorted();
     }
 
     /**
