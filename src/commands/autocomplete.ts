@@ -28,10 +28,11 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
         excludableFlags = allWords.slice(activeCommandIdx + 1);
 
     const autoCompleteWords = [
+        ...await activeCommand.complete?.({ lastWord, allWords }) ?? [],
         ...activeCommand.getVisibleCommands().map(subCommand => subCommand.name()),
         ...activeCommand.getFlags(excludableFlags),
-        ...await activeCommand.complete?.({ lastWord, allWords }) ?? []
     ];
+
 
     let filteredAutocompleteWords: string[] = [];
 
@@ -43,10 +44,5 @@ export async function autocomplete(...commanderArgs: any[]): Promise<string[] | 
     if (filteredAutocompleteWords.length === 0) return;
 
     // Sort the autocomplete words so that flags come after commands
-    return filteredAutocompleteWords.sort((a, b) => {
-        if(a.startsWith('-') && !b.startsWith('-')) return 1;
-        if(!a.startsWith('-') && b.startsWith('-')) return -1;
-        return a.localeCompare(b);
-    });
-
+    return filteredAutocompleteWords;
 }
