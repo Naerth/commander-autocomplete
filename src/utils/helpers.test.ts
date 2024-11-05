@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from 'bun:test';
 import { homedir } from 'os';
-import { program } from '../index.js';
 import * as helpers from './helpers.js';
 
 describe('helpers', () => {
