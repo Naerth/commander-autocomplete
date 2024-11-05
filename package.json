@@ -1,6 +1,6 @@
 {
   "name": "@naerth/commander-autocomplete",
-  "version": "0.0.9",
+  "version": "0.0.10-rc",
   "module": "./dist/esm/index.js",
   "main": "./dist/cjs/index.js",
   "types": "./dist/types/index.d.ts",
@@ -44,8 +44,8 @@
     "clear:dist": "rm -rf ./dist",
     "build": "bun ./scripts/build.ts",
     "postbuild": "tsc -p ./tsconfig.build.types.json",
-    "prepublish": "bun run test",
-    "publish": "npm publish --access public",
+    "prepub": "bun run test && bun run build",
+    "pub": "npm publish --access public",
     "test": "jest"
   },
   "devDependencies": {
