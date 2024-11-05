@@ -19,6 +19,7 @@ const mockGetCompletionBlock = helpers.getCompletionBlock as jest.Mock;
 describe('cleanUpBash', () => {
 
     beforeEach(() => {
+        jest.spyOn(console, 'log').mockImplementation(() => { });
         mockExistsSync.mockReset();
         mockUnlinkSync.mockReset();
         mockReadFileSync.mockReset();

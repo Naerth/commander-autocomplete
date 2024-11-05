@@ -19,6 +19,7 @@ const mockCleanUpBash = cleanUpBash as jest.Mock;
 
 describe('setupBash', () => {
     beforeEach(() => {
+        jest.spyOn(console, 'log').mockImplementation(() => { });
         jest.clearAllMocks();
     });
 
