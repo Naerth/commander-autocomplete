@@ -1,9 +1,10 @@
-import fs  from 'fs';
-import { bashrcFile, getAutocompleteFile, getCompletionBlock } from './helpers.js';
+import fs from 'fs';
+import { getBashrcFile, getAutocompleteFile, getCompletionBlock } from './helpers.js';
 
 export function cleanUpBash(bin_name: string) {
     console.log('Cleanup autocompletion');
     const completionFile = getAutocompleteFile(bin_name);
+    const bashrcFile = getBashrcFile();
 
     if (fs.existsSync(completionFile)) {
         console.log(`Removing ${completionFile}`);
@@ -24,7 +25,7 @@ export function cleanUpBash(bin_name: string) {
         console.log('-------------------');
         console.log(removedLines.join('\n'));
         console.log('-------------------');
-        
+
         fs.writeFileSync(bashrcFile, newBashrcContent);
     }
     else {

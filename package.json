@@ -46,16 +46,19 @@
     "postbuild": "tsc -p ./tsconfig.build.types.json",
     "prepublish": "bun run test",
     "publish": "npm publish --access public",
-    "test": "bun test --coverage"
+    "test": "bun test --coverage --preload ./test/mock/fs.ts"
   },
   "devDependencies": {
     "commander": "^11.0.0",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "ts-node": "^10.9.2"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@types/bun": "^1.1.13"
+    "@types/bun": "^1.1.13",
+    "@types/jest": "^29.5.14",
+    "ts-jest": "^29.2.5"
   }
 }

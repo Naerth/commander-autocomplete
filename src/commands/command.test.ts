@@ -1,4 +1,3 @@
-import { afterEach, beforeEach, describe, expect, it, spyOn, jest } from 'bun:test';
 import { Command as CommanderCommand } from 'commander';
 import * as setup from '../utils/setup.js';
 import * as cleanup from '../utils/cleanup.js';
@@ -49,7 +48,7 @@ describe('Command', () => {
 
     it('should add setup and cleanup option', () => {
 
-        spyOn(CommanderCommand.prototype, 'parse').mockReturnValue(command);
+        jest.spyOn(CommanderCommand.prototype, 'parse').mockReturnValue(command);
         command.parse();
 
         const optionsFlags = command.options.map(option => option.name());
@@ -58,16 +57,16 @@ describe('Command', () => {
 
     it('async - should add setup and cleanup option', async () => {
 
-        spyOn(CommanderCommand.prototype, 'parseAsync').mockResolvedValue(command);
+        jest.spyOn(CommanderCommand.prototype, 'parseAsync').mockResolvedValue(command);
         await command.parseAsync();
         const optionsFlags = command.options.map(option => option.name());
         expect(optionsFlags).toEqual(['force', 'setup', 'cleanup']);
     });
 
     it('Should call setupBash', () => {
-        spyOn(CommanderCommand.prototype, 'parse').mockReturnValue(command);
-        spyOn(process, 'exit').mockImplementation(() => { return 0 as never; });
-        const mockedSetupBash = spyOn(setup, 'setupBash').mockImplementation(() => { });
+        jest.spyOn(CommanderCommand.prototype, 'parse').mockReturnValue(command);
+        jest.spyOn(process, 'exit').mockImplementation(() => { return 0 as never; });
+        const mockedSetupBash = jest.spyOn(setup, 'setupBash').mockImplementation(() => { });
 
         const localCommand = new Command();
         localCommand.parse(['--setup'], { from: 'user' });
@@ -77,13 +76,13 @@ describe('Command', () => {
     });
 
     it('Should call cleanupBash', () => {
-        spyOn(CommanderCommand.prototype, 'parse').mockReturnValue(command);
-        spyOn(process, 'exit').mockImplementation(() => { return 0 as never; });
-        const mockCleanUp = spyOn(cleanup, 'cleanUpBash').mockImplementation(() => { });
+        jest.spyOn(CommanderCommand.prototype, 'parse').mockReturnValue(command);
+        jest.spyOn(process, 'exit').mockImplementation(() => { return 0 as never; });
+        const mockCleanUp = jest.spyOn(cleanup, 'cleanUpBash').mockImplementation(() => { });
 
         const localCommand = new Command();
         localCommand.parse(['--cleanup'], { from: 'user' });
-        expect(mockCleanUp).toBeCalledTimes(1);
+        expect(mockCleanUp).toHaveBeenCalledTimes(1);
 
         mockCleanUp.mockClear();
     });

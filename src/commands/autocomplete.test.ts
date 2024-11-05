@@ -1,4 +1,3 @@
-import { describe, expect, it, jest } from 'bun:test';
 import { autocomplete } from './autocomplete';
 import { Command } from '../commands/command.js';
 

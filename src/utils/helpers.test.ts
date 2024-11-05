@@ -1,25 +1,46 @@
-import { beforeEach, describe, expect, it, jest } from 'bun:test';
-import { homedir } from 'os';
-import * as helpers from './helpers.js';
+import os from 'os';
+import { getAutocompleteFile, getCompletionBlock, getBashrcFile, getAutocompleteDir } from './helpers.js';
+
+jest.mock('os');
+
+const mockHomedir = os.homedir as jest.Mock;
 
 describe('helpers', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockHomedir.mockReset();
     });
+
+    it('should return the bashrc file', () => {
+        mockHomedir.mockReturnValue('/home/user');
+        const bashrcFile = getBashrcFile();
+        expect(bashrcFile).toBe(`/home/user/.bashrc`);
+    });
+
+    it('should return the autocomplete dir', () => {
+        mockHomedir.mockReturnValue('/home/user');
+        const autocompleteDir = getAutocompleteDir();
+        expect(autocompleteDir).toBe(`/home/user/.autocomplete`);
+    });
+
 
     it('should return the autocomplete file', () => {
 
-        const binName = 'example';
-        const autocompleteFile = helpers.getAutocompleteFile(binName);
+        mockHomedir.mockReturnValue('/home/user');
 
-        expect(autocompleteFile).toBe(`${helpers.autocompleteDir}/example`);
+        const binName = 'example';
+        const autocompleteFile = getAutocompleteFile(binName);
+        expect(autocompleteFile).toBe(`/home/user/.autocomplete/example`);
     });
 
     it('should return the completion block', () => {
-        const binName = 'example';
-        const completionFile = helpers.getAutocompleteFile(binName);
-        const completionBlock = helpers.getCompletionBlock(completionFile);
 
-        expect(completionBlock).toBe(`source ${completionFile.replace(homedir(), "~")}\n`);
+        mockHomedir.mockReturnValue('/home/user');
+
+        const binName = 'example';
+        const completionFile = getAutocompleteFile(binName);
+        const completionBlock = getCompletionBlock(completionFile);
+
+        expect(completionBlock).toBe(`source ~/.autocomplete/example\n`);
     });
+
 });

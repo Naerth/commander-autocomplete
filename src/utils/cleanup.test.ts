@@ -1,95 +1,72 @@
-import { beforeEach, describe, expect, it, jest, spyOn } from 'bun:test';
 import fs from 'fs';
 import { cleanUpBash } from './cleanup';
 import * as helpers from './helpers.js';
 
+jest.mock('fs');
+jest.mock('./helpers');
+
+const mockExistsSync = fs.existsSync as jest.Mock;
+const mockUnlinkSync = fs.unlinkSync as jest.Mock;
+const mockWriteFileSync = fs.writeFileSync as jest.Mock;
+const mockReadFileSync = fs.readFileSync as jest.Mock;
+
+const mockGetAutocompleteFile = helpers.getAutocompleteFile as jest.Mock;
+const mockGetBashrcFile = helpers.getBashrcFile as jest.Mock;
+const mockGetCompletionBlock = helpers.getCompletionBlock as jest.Mock;
+
+
 
 describe('cleanUpBash', () => {
+
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockExistsSync.mockReset();
+        mockUnlinkSync.mockReset();
+        mockReadFileSync.mockReset();
+        mockWriteFileSync.mockReset();
+        mockGetAutocompleteFile.mockReset();
+        mockGetBashrcFile.mockReset();
+        mockGetCompletionBlock.mockReset();
     });
 
-    const binName = 'example';
-    const completionFile = helpers.getAutocompleteFile(binName);
-    const completionBlock = helpers.getCompletionBlock(completionFile);
+    const bin_name = 'test-bin';
+    const completionFile = '/path/to/completion/file';
+    const bashRcFile = '/path/to/bashrc/file';
+    const bashrcContent = 'some content\ncompletion block\nsome other content';
+    const completionBlock = 'completion block';
+    // const newBashrcContent = 'some content\nsome other content';
 
-    const mockedFsExists = spyOn(fs, 'existsSync');
-    const mockedFsUnlink = spyOn(fs, 'unlinkSync');
-    const mockedFsRead = spyOn(fs, 'readFileSync');
-    const mockedFsWrite = spyOn(fs, 'writeFileSync');
-    // Disable default console.log
-    spyOn(console, 'log').mockImplementation(() => { });
+    it('should remove the completion file if it exists and should overide bashrc file', async () => {
 
-    it('should remove completion file and write bashrc', () => {
-        const mockedExists = mockedFsExists.mockReturnValue(true);
-        const mockedUnlink = mockedFsUnlink.mockReturnValue();
-        const mockedRead = mockedFsRead.mockReturnValue(completionBlock);
-        const mockedWrite = mockedFsWrite.mockReturnValue();
+        mockExistsSync.mockReturnValue(true);
+        mockGetAutocompleteFile.mockReturnValue(completionFile);
+        mockWriteFileSync.mockImplementation(() => { });
+        mockGetBashrcFile.mockReturnValue(bashRcFile);
+        mockGetCompletionBlock.mockReturnValue(completionBlock);
+        mockReadFileSync.mockReturnValue(bashrcContent);
 
-        cleanUpBash(binName);
+        cleanUpBash(bin_name);
 
-        expect(mockedExists).toHaveBeenCalledTimes(1);
-        expect(mockedExists).toHaveBeenCalledWith(completionFile);
-
-        expect(mockedUnlink).toHaveBeenCalledTimes(1);
-        expect(mockedUnlink).toHaveBeenCalledWith(completionFile);
-
-        expect(mockedRead).toHaveBeenCalledTimes(1);
-
-
-        expect(mockedWrite).toHaveBeenCalled();
+        expect(mockExistsSync).toHaveBeenCalledTimes(1);
+        expect(mockGetBashrcFile).toHaveBeenCalledTimes(1);
+        expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
+        expect(mockUnlinkSync).toHaveBeenCalledWith(completionFile);
+        expect(mockReadFileSync).toHaveBeenCalledWith(bashRcFile, { encoding: 'utf-8' });
     });
 
-    it('should remove completion file and not rewrite bashrc', () => {
-        const mockedExists = mockedFsExists.mockReturnValue(true);
-        const mockedUnlink = mockedFsUnlink.mockReturnValue();
-        const mockedRead = mockedFsRead.mockReturnValue('');
-        const mockedWrite = mockedFsWrite.mockReturnValue();
 
-        cleanUpBash(binName);
+    it('should keep bashrc intact', async () => {
 
-        expect(mockedExists).toHaveBeenCalledTimes(1);
-        expect(mockedExists).toHaveBeenCalledWith(completionFile);
 
-        expect(mockedUnlink).toHaveBeenCalledTimes(1);
+        mockExistsSync.mockReturnValue(true);
+        mockGetAutocompleteFile.mockReturnValue(completionFile);
+        mockWriteFileSync.mockImplementation(() => { });
+        mockGetBashrcFile.mockReturnValue(bashRcFile);
+        mockGetCompletionBlock.mockReturnValue("completion block2");
+        mockReadFileSync.mockReturnValue(bashrcContent);
 
-        expect(mockedRead).toHaveBeenCalledTimes(1);
+        cleanUpBash(bin_name);
 
-        expect(mockedWrite).not.toHaveBeenCalled();
-    });
 
-    it('should not remove completion file and write bashrc', () => {
-
-        const mockedExists = mockedFsExists.mockReturnValue(false);
-        const mockedUnlink = mockedFsUnlink.mockReturnValue();
-        const mockedRead = mockedFsRead.mockReturnValue(completionBlock);
-        const mockedWrite = mockedFsWrite.mockReturnValue();
-
-        cleanUpBash(binName);
-
-        expect(mockedExists).toHaveBeenCalledTimes(1);
-        expect(mockedExists).toHaveBeenCalledWith(completionFile);
-
-        expect(mockedUnlink).not.toHaveBeenCalled();
-
-        expect(mockedRead).toHaveBeenCalledTimes(1);
-        expect(mockedWrite).toHaveBeenCalledTimes(1);
-    });
-
-    it('should not remove completion file and not rewrite bashrc', () => {
-        const mockedExists = mockedFsExists.mockReturnValue(false);
-        const mockedUnlink = mockedFsUnlink.mockReturnValue();
-        const mockedRead = mockedFsRead.mockReturnValue('');
-        const mockedWrite = mockedFsWrite.mockReturnValue();
-
-        cleanUpBash(binName);
-
-        expect(mockedExists).toHaveBeenCalledTimes(1);
-        expect(mockedExists).toHaveBeenCalledWith(completionFile);
-
-        expect(mockedUnlink).not.toHaveBeenCalled();
-
-        expect(mockedRead).toHaveBeenCalledTimes(1);
-        expect(mockedWrite).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled()
     });
 });

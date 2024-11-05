@@ -1,8 +1,21 @@
-import { homedir } from 'os';
+import os from 'os';
 import { join } from "path";
 
-export const autocompleteDir = join(homedir(), ".autocomplete");
-export const bashrcFile = join(homedir(), ".bashrc");
+/**
+ * Returns the location of the autocomplete directory
+ * @returns The location of the autocomplete directory
+ */
+export const getAutocompleteDir = () => {
+    return join(os.homedir(), ".autocomplete");
+};
+
+/**
+ * Returns the location of the bashrc file
+ * @returns The location of the bashrc file
+ */
+export const getBashrcFile = () => {
+    return join(os.homedir(), ".bashrc");
+};
 
 /**
  * Returns the location of the autocomplete file
@@ -10,7 +23,7 @@ export const bashrcFile = join(homedir(), ".bashrc");
  * @returns The location of the autocomplete file
  */
 export function getAutocompleteFile(bin_name: string) {
-    return join(autocompleteDir, bin_name);
+    return join(getAutocompleteDir(), bin_name);
 }
 
 /**
@@ -19,5 +32,5 @@ export function getAutocompleteFile(bin_name: string) {
  * @returns The bash completion block to be added to the bash profile
  */
 export function getCompletionBlock(completionFile: string) {
-    return `source ${completionFile.replace(homedir(), "~")}\n`;
+    return `source ${completionFile.replace(os.homedir(), "~")}\n`;
 }
