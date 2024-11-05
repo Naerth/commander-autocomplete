@@ -27,7 +27,7 @@ describe('setupBash', () => {
 
     it('should call cleanUpBash with the correct bin name', () => {
         setupBash(binName);
-        expect(mockCleanUpBash).toHaveBeenCalledWith(binName);
+        expect(mockCleanUpBash).toHaveBeenCalledWith(binName, false);
     });
 
     it('should create autocomplete directory with correct permissions', () => {

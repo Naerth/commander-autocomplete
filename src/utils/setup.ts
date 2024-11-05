@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { getCompletionBlock, getAutocompleteDir, getBashrcFile, getAutocompleteFile } from './helpers.js';
+import { getCompletionBlock, getAutocompleteDir, getBashrcFile, getAutocompleteFile, backupBashRc } from './helpers.js';
 import { cleanUpBash } from './cleanup.js';
 
 /**
@@ -33,8 +33,11 @@ complete -F "${bin_name}_completion" ${bin_name}
  * @param bin_name name of binary
  */
 export function setupBash(bin_name: string) {
-    console.log('setup')
-    cleanUpBash(bin_name);
+    
+    const backupFile = backupBashRc(getBashrcFile());
+    console.log(`Backup .bashrc to ${backupFile}`);
+
+    cleanUpBash(bin_name, false);
 
     fs.mkdirSync(getAutocompleteDir(), { mode: 0o755, recursive: true });
     const completionFile = getAutocompleteFile(bin_name);

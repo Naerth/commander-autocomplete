@@ -1,13 +1,18 @@
 import os from 'os';
-import { getAutocompleteFile, getCompletionBlock, getBashrcFile, getAutocompleteDir } from './helpers.js';
+import fs from 'fs';
+import { getAutocompleteFile, getCompletionBlock, getBashrcFile, getAutocompleteDir, backupBashRc } from './helpers.js';
 
+jest.mock('fs');
 jest.mock('os');
 
+const mockDateNow = jest.spyOn(Date, 'now').mockImplementation(() => 1234567890);
+const mockFsCopyFileSync = fs.copyFileSync as jest.Mock;
 const mockHomedir = os.homedir as jest.Mock;
 
 describe('helpers', () => {
     beforeEach(() => {
         mockHomedir.mockReset();
+        mockFsCopyFileSync.mockReset();
     });
 
     it('should return the bashrc file', () => {
@@ -41,6 +46,17 @@ describe('helpers', () => {
         const completionBlock = getCompletionBlock(completionFile);
 
         expect(completionBlock).toBe(`source ~/.autocomplete/example\n`);
+    });
+
+    it('should copy the bashrc file to a backup file', () => {
+
+        mockFsCopyFileSync.mockImplementation(() => { });
+        const bashRcFile = '/home/user/.bashrc';
+        const backupBashRcFile = backupBashRc(bashRcFile);
+
+        expect(mockDateNow).toHaveBeenCalled();
+        expect(mockFsCopyFileSync).toHaveBeenCalledWith(bashRcFile, `${bashRcFile}.1234567890`);
+        expect(backupBashRcFile).toBe(`${bashRcFile}.1234567890`);
     });
 
 });

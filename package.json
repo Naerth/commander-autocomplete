@@ -46,7 +46,7 @@
     "postbuild": "tsc -p ./tsconfig.build.types.json",
     "prepublish": "bun run test",
     "publish": "npm publish --access public",
-    "test": "bun test --coverage --preload ./test/mock/fs.ts"
+    "test": "jest"
   },
   "devDependencies": {
     "commander": "^11.0.0",
