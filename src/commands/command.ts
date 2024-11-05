@@ -101,7 +101,7 @@ export class Command extends CommanderCommand {
     * @override Enable autocomplete
     */
     public parse(argv?: readonly string[] | undefined, options?: ParseOptions | undefined): this {
-        this.enableAutocomplete();
+        this.enableAutocomplete(argv, options);
         return super.parse(argv, options);
     }
 
@@ -109,7 +109,7 @@ export class Command extends CommanderCommand {
      * @override Enable autocomplete 
      */
     public async parseAsync(argv?: readonly string[] | undefined, options?: ParseOptions | undefined): Promise<this> {
-        this.enableAutocomplete();
+        this.enableAutocomplete(argv, options);
         return super.parseAsync(argv, options);
     }
 
@@ -119,9 +119,6 @@ export class Command extends CommanderCommand {
      * @throws {Error} Throws an error if the name is not provided.
      */
     private setup() {
-        if (!this.name())
-            throw new Error("Command name is required to enable autocomplete");
-
         setupBash(this.name());
         process.exit(0);
     }
@@ -142,15 +139,18 @@ export class Command extends CommanderCommand {
      * Enables autocomplete functionality for the program.
      * @internal
      */
-    private enableAutocomplete() {
+    private enableAutocomplete(argv?: readonly string[] | undefined, options?: ParseOptions | undefined) {
 
         this.addOption(setupOption);
         this.addOption(cleanupOption);
 
-        if (process.argv.includes(`--${setupOption.name()}`))
+        const userArgs = super._prepareUserArgs(argv, options);
+
+        if (userArgs.includes(`--${setupOption.name()}`))
             this.setup();
 
-        if (process.argv.includes(`--${cleanupOption.name()}`))
+
+        if (userArgs.includes(`--${cleanupOption.name()}`))
             this.cleanup();
 
 
