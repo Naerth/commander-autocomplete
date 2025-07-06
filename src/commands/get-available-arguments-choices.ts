@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 
 /**
- * Get the arguments choices that should be excluded from suggestions.
+ * Get the arguments choices that should be included in suggestions.
  * This includes arguments choices that have already been used after the active command.
  * An argument choice is considered already in the words if one value expected by the argument is present in the remaining words.
  * None of the argument choices will be available for suggestions if at least one of them is already in the words.
