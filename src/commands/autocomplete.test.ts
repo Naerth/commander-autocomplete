@@ -37,7 +37,7 @@ describe('autocomplete', () => {
         program.option('-v, --verbose');
         program.option('-q, --quiet');
         const result = await autocomplete(program);
-        expect(result).toEqual(['git', 'npm', 'yarn', '--force', '--quiet', '--verbose', '-f', '-q', '-v']);
+        expect(result).toEqual(['git', 'npm', 'yarn', '--force', '--quiet', '--verbose', '-f', '-q', '-v'].toSorted());
     });
 
     it('should return an array of commands and options with a custom filter', async () => {

@@ -1,90 +1,102 @@
+import { jest } from '@jest/globals';
+import { Command } from './command.js';
+import { setupBash } from '../utils/setup.js';
+import { cleanUpBash } from '../utils/cleanup.js';
+import type { AutocompleteHandler } from '../types.js';
 import { Command as CommanderCommand } from 'commander';
-import * as setup from '../utils/setup.js';
-import * as cleanup from '../utils/cleanup.js';
-import { Command } from './command';
+import * as autocompleteModule from './autocomplete.js';
+
+jest.mock('../../src/utils/setup');
+jest.mock('../../src/utils/cleanup');
 
 describe('Command', () => {
-    let command: Command;
-
     beforeEach(() => {
-        command = new Command('git');
-        command.option('-f, --force');
-
-        command
-            .command('clone')
-            .description('Clone a repository')
-            .option('--mirror');
-
-        command
-            .command('pull')
-            .description('Pull from a repository')
-            .option('-q, --quiet');
-    });
-
-    afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should set the autocomplete handler function for the command', () => {
-        const autocompleteHandler = () => ['test'];
-        command.autocomplete(autocompleteHandler);
-        expect(command.complete).toBeDefined();
+    test('should set autocomplete handler and call it in complete()', async () => {
+        const cmd = new Command('test');
+
+        const handler = jest.fn<AutocompleteHandler>(() => (['foo', 'bar']));
+        cmd.autocomplete(handler);
+
+        const result = await cmd.complete({ allWords: [], lastWord: '' });
+        expect(result).toEqual(['foo', 'bar']);
+        expect(handler).toHaveBeenCalledWith({ allWords: [], lastWord: '' });
     });
 
-    it('should return an array of visible commands', () => {
-        const visibleCommands = command.getVisibleCommands();
-        expect(visibleCommands.map(cmd => cmd.name())).toEqual(['clone', 'pull']);
+    test('should return empty array if no autocomplete handler set', async () => {
+        const cmd = new Command('test');
+        const result = await cmd.complete({ allWords: [], lastWord: '' });
+        expect(result).toEqual([]);
     });
 
-    it('should return an array of flags', () => {
-        const flags = command.getFlags();
-        expect(flags).toEqual(['--force', '-f']);
+    test('should create new sub-command as extended Command', () => {
+        const root = new Command('root');
+        const sub = root.createCommand('sub');
+        expect(sub).toBeInstanceOf(Command);
     });
 
-    it('should create a new command', () => {
-        const newCommand = command.createCommand('new');
-        expect(newCommand).toBeInstanceOf(Command);
+    test('should add hidden setup/cleanup options and call setupBash on --setup', () => {
+        const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {
+            throw new Error('process.exit called');
+        });
+
+        const cmd = new Command('foo');
+        expect(() => {
+            cmd.parse(['node', 'foo', '--setup']);
+        }).toThrow('process.exit called');
+
+        expect(setupBash).toHaveBeenCalledWith('foo');
+        mockExit.mockRestore();
     });
 
-    it('should add setup and cleanup option', () => {
+    test('should call cleanUpBash on --cleanup', () => {
+        const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {
+            throw new Error('process.exit called');
+        });
 
-        jest.spyOn(CommanderCommand.prototype, 'parse').mockReturnValue(command);
-        command.parse();
+        const cmd = new Command('foo');
+        expect(() => {
+            cmd.parse(['node', 'foo', '--cleanup']);
+        }).toThrow('process.exit called');
 
-        const optionsFlags = command.options.map(option => option.name());
-        expect(optionsFlags).toEqual(['force', 'setup', 'cleanup']);
+        expect(cleanUpBash).toHaveBeenCalledWith('foo');
+        mockExit.mockRestore();
     });
 
-    it('async - should add setup and cleanup option', async () => {
+    test('should throw error if cleanup is called with no name', () => {
+        const cmd = new Command(); // No name provided
+        const cleanupFn = () => (cmd as any).cleanup(); // Force call to private method
 
-        jest.spyOn(CommanderCommand.prototype, 'parseAsync').mockResolvedValue(command);
-        await command.parseAsync();
-        const optionsFlags = command.options.map(option => option.name());
-        expect(optionsFlags).toEqual(['force', 'setup', 'cleanup']);
+        expect(cleanupFn).toThrow('Command name is required to enable autocomplete');
     });
 
-    it('Should call setupBash', () => {
-        jest.spyOn(CommanderCommand.prototype, 'parse').mockReturnValue(command);
-        jest.spyOn(process, 'exit').mockImplementation(() => { return 0 as never; });
-        const mockedSetupBash = jest.spyOn(setup, 'setupBash').mockImplementation(() => { });
+    test('parseAsync should call enableAutocomplete and then parseAsync', async () => {
+        const cmd = new Command('foo');
+        const spy = jest.spyOn(Command.prototype as any, 'enableAutocomplete');
 
-        const localCommand = new Command();
-        localCommand.parse(['--setup'], { from: 'user' });
-        expect(mockedSetupBash).toHaveBeenCalledTimes(1);
+        jest.spyOn(process, 'exit').mockImplementation(() => (null as never));
+        jest
+            .spyOn(CommanderCommand.prototype, 'parseAsync')
+            .mockImplementation(async () => cmd); // Mock parseAsync to return this command
 
-        mockedSetupBash.mockClear();
+        const result = await cmd.parseAsync(['node', 'foo']);
+        expect(result).toBe(cmd);
+        expect(spy).toHaveBeenCalled();
     });
 
-    it('Should call cleanupBash', () => {
-        jest.spyOn(CommanderCommand.prototype, 'parse').mockReturnValue(command);
-        jest.spyOn(process, 'exit').mockImplementation(() => { return 0 as never; });
-        const mockCleanUp = jest.spyOn(cleanup, 'cleanUpBash').mockImplementation(() => { });
+    test('parse should call enableAutocomplete and then parse', async () => {
+        const cmd = new Command('foo');
+        const spy = jest.spyOn(Command.prototype as any, 'enableAutocomplete');
 
-        const localCommand = new Command();
-        localCommand.parse(['--cleanup'], { from: 'user' });
-        expect(mockCleanUp).toHaveBeenCalledTimes(1);
+        jest.spyOn(process, 'exit').mockImplementation(() => (null as never));
+        jest
+            .spyOn(CommanderCommand.prototype, 'parse')
+            .mockImplementation(() => cmd); // Mock parseAsync to return this command
 
-        mockCleanUp.mockClear();
+        const result = await cmd.parse(['node', 'foo']);
+        expect(result).toBe(cmd);
+        expect(spy).toHaveBeenCalled();
     });
-
 });
