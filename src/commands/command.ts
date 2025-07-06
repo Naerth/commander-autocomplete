@@ -130,7 +130,7 @@ export class Command extends CommanderCommand {
         if (userArgs.includes(`--${cleanupOption.name()}`))
             this.cleanup();
 
-
+        /* istanbul ignore next */
         this
             .command("completion", { hidden: true })
             .allowUnknownOption(true)
