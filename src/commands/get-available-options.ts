@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 
 /**
- * Get the options that should be excluded from suggestions.
+ * Get the options that should be included in suggestions.
  * This includes options that have already been used after the active command.
  * An option is considered already in the words if its short or long form is present in the remaining words.
  * @param remainingWords - The words input by the user after the active command.
@@ -13,9 +13,8 @@ export const getAvailableOptions = (remainingWords: string[], activeCommand: Com
         if (option.hidden) return acc;
 
         if (
-            (!option.short || remainingWords.includes(option.short))
-            ||
-            (!option.long || remainingWords.includes(option.long))
+            (option.short && remainingWords.includes(option.short)) ||
+            (option.long && remainingWords.includes(option.long))
         )
             return acc;
 
