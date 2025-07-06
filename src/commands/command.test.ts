@@ -70,7 +70,7 @@ describe('Command', () => {
 
         const localCommand = new Command();
         localCommand.parse(['--setup'], { from: 'user' });
-        expect(mockedSetupBash).toBeCalledTimes(1);
+        expect(mockedSetupBash).toHaveBeenCalledTimes(1);
 
         mockedSetupBash.mockClear();
     });
