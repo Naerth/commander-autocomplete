@@ -1,6 +1,6 @@
 import type { Target } from 'bun';
-import { join } from 'path';
 import fs from 'fs/promises';
+import { join } from 'path';
 
 const entrypoint = join(import.meta.dir, '../src/index.ts');
 
@@ -32,6 +32,26 @@ const buildProject = async (target: Target) => {
 await buildProject('bun');
 await buildProject('node');
 
+const tsConfig = await fs.readFile(join(import.meta.dir, '../tsconfig.json'), 'utf-8');
+let tsConfigJson = JSON.parse(tsConfig);
+
+// remove include/exclude properties
+tsConfigJson.include = ['./**/*'];
+delete tsConfigJson.exclude;
+
+await fs.writeFile(join(import.meta.dir, '../dist/tsconfig.json'), JSON.stringify(tsConfigJson, null, 2), 'utf-8');
+
+
+const packageJson = await fs.readFile(join(import.meta.dir, '../package.json'), 'utf-8');
+let packageJsonObj = JSON.parse(packageJson);
+
+// remove devDependencies
+delete packageJsonObj.devDependencies;
+delete packageJsonObj.scripts;
+delete packageJsonObj.dependencies;
+delete packageJsonObj.peerDependencies;
+
+await fs.writeFile(join(import.meta.dir, '../dist/package.json'), JSON.stringify(packageJsonObj, null, 2), 'utf-8');
 
 
 export { };
