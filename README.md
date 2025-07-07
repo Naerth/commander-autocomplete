@@ -2,6 +2,10 @@
 
 commander-autocomplete is a module that provides autocomplete for command-line interfaces built with the [Commander.js](https://github.com/tj/commander.js) library.
 
+![npm](https://img.shields.io/npm/v/@naerth/commander-autocomplete) <!-- coverage-badge-start -->
+![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
+<!-- coverage-badge-end -->
+
 ## Installation
 You can install commander-autocomplete using npm, yarn, or bun:
 

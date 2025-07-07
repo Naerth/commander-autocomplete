@@ -13,6 +13,8 @@ const config: Config = {
         "(.+)\\.js$": "$1"
     },
     collectCoverage: true,
+    coverageDirectory: 'coverage',
+    coverageReporters: ['text', 'html', 'json-summary'],
 };
 
 export default config;

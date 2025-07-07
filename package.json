@@ -44,7 +44,8 @@
     "prepub:rc": "bun run prepub",
     "pub": "npm publish --access public --tag latest",
     "pub:rc": "npm publish --access public --tag next",
-    "test": "jest"
+    "test": "jest",
+    "posttest" : "bun ./scripts/generate-coverage-badge.ts"
   },
   "devDependencies": {
     "jest": "^29.7.0",
