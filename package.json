@@ -1,6 +1,6 @@
 {
   "name": "@naerth/commander-autocomplete",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": "./dist/node/index.js",
   "module": "./dist/node/index.js",
   "types": "./dist/types/index.d.ts",
