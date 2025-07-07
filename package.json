@@ -42,8 +42,8 @@
     "postbuild": "tsc -p ./tsconfig.build.types.json",
     "prepub": "bun run test && bun run build",
     "prepub:rc": "bun run prepub",
-    "pub": "cd dist && npm publish --access public --tag latest",
-    "pub:rc": "cd dist && npm publish --access public --tag next",
+    "pub": "npm publish --access public --tag latest",
+    "pub:rc": "npm publish --access public --tag next",
     "test": "jest"
   },
   "devDependencies": {
