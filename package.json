@@ -1,9 +1,9 @@
 {
   "name": "@naerth/commander-autocomplete",
-  "version": "0.0.11",
-  "main": "./node/index.js",
-  "module": "./node/index.js",
-  "types": "./types/index.d.ts",
+  "version": "0.0.12",
+  "main": "./dist/node/index.js",
+  "module": "./dist/node/index.js",
+  "types": "./dist/types/index.d.ts",
   "type": "module",
   "description": "Small utility that add autocomplete for commander",
   "keywords": [
@@ -22,16 +22,18 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "types": "./types/index.d.ts",
-      "default": "./node/commander-autocomplete.js",
-      "import": "./node/commander-autocomplete.js",
-      "bun": "./bun/commander-autocomplete.js",
-      "node": "./node/commander-autocomplete.js"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/node/commander-autocomplete.js",
+      "import": "./dist/node/commander-autocomplete.js",
+      "bun": "./dist/bun/commander-autocomplete.js",
+      "node": "./dist/node/commander-autocomplete.js"
     }
   },
   "files": [
-    "./**/*",
-    "./tsconfig.json"
+    "./dist/**/*",
+    "./package.json",
+    "./tsconfig.json",
+    "./README.md"
   ],
   "scripts": {
     "yarn": "bun install --yarn",
@@ -45,16 +47,16 @@
     "test": "jest"
   },
   "devDependencies": {
-    "commander": "^13.1.0",
     "jest": "^29.7.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "ts-jest": "^29.4.0"
   },
   "peerDependencies": {
+    "commander": "^13.1.0",
     "typescript": "^5.6.3"
   },
   "dependencies": {
     "@types/bun": "^1.2.18",
-    "@types/jest": "^29.5.14",
-    "ts-jest": "^29.4.0"
+    "@types/jest": "^29.5.14"
   }
 }
