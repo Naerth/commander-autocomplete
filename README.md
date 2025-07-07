@@ -124,7 +124,7 @@ repo1  repo2  repo3
 ```
 
 ```bash
-$ example clone repo2 --type
+$ example clone repo2 --type <TAB>
 full     shallow
 ```
 
