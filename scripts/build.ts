@@ -15,6 +15,8 @@ const buildProject = async (target: Target) => {
         entrypoints: [entrypoint],
         target: target,
         external: ['commander'],
+        minify: true,
+        sourcemap: 'linked',
         format: 'esm',
         naming: 'commander-autocomplete.js',
         outdir: outDir
