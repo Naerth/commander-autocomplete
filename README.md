@@ -45,7 +45,7 @@ hello.command("world").action(() => {
 });
 
 // automatically enable autocomplete
-program.parse(process.argv)
+program.parse(process.argv);
 
 ```
 Terminal 
@@ -73,12 +73,11 @@ const hello = program
   });
 
 hello.command("world").action(() => {
-// automatically enable autocomplete (process.argv is passed by default)
-program.parse()
+  console.log("Hello, world!");
 });
 
 // automatically enable autocomplete
-program.parse()
+program.parse(process.argv);
 
 ```
 Terminal 
@@ -113,7 +112,7 @@ program
     });
 
 
-program.parse();
+program.parse(process.argv);
 
 ```
 Terminal 
@@ -150,7 +149,7 @@ program
 
 
 // automatically enable autocomplete
-program.parse()
+program.parse(process.argv)
 ```
 
 Terminal 
