@@ -46,7 +46,7 @@ program.parse()
 Terminal 
 
 ```bash
-example hello[tab]
+$ example hello[tab]
 world
 ```
 
@@ -78,8 +78,45 @@ program.parse()
 Terminal 
 
 ```bash
-example hello[tab]
+$ example hello[tab]
 -d       --debug  world
+```
+
+### Autocomplete with arguments and options choices
+
+```javascript
+
+const { program } = require("@naerth/commander-autocomplete");
+// or
+import { program } from "@naerth/commander-autocomplete";
+import { Argument } from 'commander';
+
+program.name("example");
+
+const argument = new Argument('<repository>', 'Repository to clone')
+argument.choices(['repo1', 'repo2', 'repo3'])
+
+program
+    .command('clone')
+    .addArgument(argument)
+    .action(() => {
+        console.log('clone command executed');
+    });
+
+
+program.parse();
+
+```
+Terminal 
+
+```bash
+$ example clone repo[tab]
+repo1  repo2  repo3
+```
+
+```bash
+$ autocli clone repo2 --type
+full     shallow
 ```
 
 ### Programmatic autocomplete
@@ -108,7 +145,7 @@ program.parse()
 Terminal 
 
 ```bash
-example list[tab]
+$ example list[tab]
 -l        --long    universe  world 
 ```
 
@@ -117,14 +154,14 @@ example list[tab]
 To use autocomplete in a terminal:
 
 ```bash
-example --setup
+$ example --setup
 source ~/.bashrc
 ```
 
 To disable autocomplete:
 
 ```bash
-example --cleanup
+$ example --cleanup
 source ~/.bashrc
 ```
 ## Limitation
