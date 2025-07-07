@@ -39,7 +39,9 @@
     "build": "bun ./scripts/build.ts",
     "postbuild": "tsc -p ./tsconfig.build.types.json",
     "prepub": "bun run test && bun run build",
+    "prepub:rc": "bun run prepub",
     "pub": "npm publish --access public",
+    "pub:rc": "npm publish --access public --tag next",
     "test": "jest"
   },
   "devDependencies": {
