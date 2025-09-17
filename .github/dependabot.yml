@@ -1,0 +1,9 @@
+version: 2
+updates:
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "daily" # tu peux mettre daily pour voir vite le résultat
+    labels:
+      - "dependencies"
+    open-pull-requests-limit: 3
