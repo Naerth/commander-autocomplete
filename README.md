@@ -24,7 +24,7 @@ bun install commander @naerth/commander-autocomplete
 ## Usage
 To use commander-autocomplete, you need to add the following code to your Commander.js-based CLI application.
 
-commander-autocomplete supports both typescript and TypeScript.
+commander-autocomplete supports both Javascript and TypeScript.
 
 ### Autocomplete with subcommands
 
