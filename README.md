@@ -186,6 +186,3 @@ Currently, only Bash is supported. Support for other shells (such as Zsh or Fish
 
 ## Contributing
 If you would like to contribute to commander-autocomplete, please fork the repository and submit a pull request.
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
