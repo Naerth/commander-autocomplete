@@ -4,46 +4,46 @@ import { cleanUpBash } from './cleanup.js';
 
 /**
  * Template for bash autocomplete
- * @param bin_name 
+ * @param binaryName 
  * @returns 
  */
-const generateBashTemplate = (bin_name: string) => `
-function ${bin_name}_comp() {
+const generateBashTemplate = (binaryName: string) => `
+function ${binaryName}_comp() {
     
-    local cur
+    local currentWord
     COMPREPLY=() # Array variable storing the possible completions.
-    cur=\${COMP_WORDS[COMP_CWORD]}
-    COMPREPLY=($(compgen -W "$1" -- \${cur}))
+    currentWord=\${COMP_WORDS[COMP_CWORD]}
+    COMPREPLY=($(compgen -W "$1" -- \${currentWord}))
     [[ $COMPREPLY ]] && return
 
     _filedir
 }
 
-function ${bin_name}_completion {
-    prop=$(${bin_name} completion "\${COMP_WORDS[@]}")
-    ${bin_name}_comp "$prop"
+function ${binaryName}_completion {
+    suggestions=$(${binaryName} completion "\${COMP_WORDS[@]}")
+    ${binaryName}_comp "$suggestions"
 }
 
-complete -F "${bin_name}_completion" ${bin_name}
+complete -F "${binaryName}_completion" ${binaryName}
 
 `;
 
 /**
  * Create and write autocomplete file
- * @param bin_name name of binary
+ * @param binaryName name of binary
  */
-export function setupBash(bin_name: string) {
+export function setupBash(binaryName: string) {
     
     const backupFile = backupBashRc(getBashrcFile());
     console.log(`Backup .bashrc to ${backupFile}`);
 
-    cleanUpBash(bin_name, false);
+    cleanUpBash(binaryName, false);
 
     fs.mkdirSync(getAutocompleteDir(), { mode: 0o755, recursive: true });
-    const completionFile = getAutocompleteFile(bin_name);
+    const completionFile = getAutocompleteFile(binaryName);
 
     console.log(`Write ${completionFile}`);
-    fs.appendFileSync(completionFile, generateBashTemplate(bin_name));
+    fs.appendFileSync(completionFile, generateBashTemplate(binaryName));
 
     console.log(`Write .bashrc`);
     fs.appendFileSync(getBashrcFile(), getCompletionBlock(completionFile));

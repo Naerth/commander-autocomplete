@@ -1,10 +1,10 @@
 import fs from 'fs';
 import { getBashrcFile, getAutocompleteFile, getCompletionBlock, backupBashRc } from './helpers.js';
 
-export function cleanUpBash(bin_name: string, backup: boolean = true) {
+export function cleanUpBash(binaryName: string, backup: boolean = true) {
 
     console.log('Cleanup autocompletion');
-    const completionFile = getAutocompleteFile(bin_name);
+    const completionFile = getAutocompleteFile(binaryName);
     const bashrcFile = getBashrcFile();
 
     if (backup) {

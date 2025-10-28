@@ -13,10 +13,10 @@ export const getActiveOption = (
 ): Option | undefined => {
 
     // Find the last flag in the two last words of the input
-    const lastFlag = inputWords.slice(-2).findLast(w => w.startsWith('-'));
+    const lastFlag = inputWords.slice(-2).findLast(word => word.startsWith('-'));
 
     if (!lastFlag) return;
 
-    return activeCommand.options.find(opt => opt.short === lastFlag || opt.long === lastFlag);
+    return activeCommand.options.find(option => option.short === lastFlag || option.long === lastFlag);
 
 };

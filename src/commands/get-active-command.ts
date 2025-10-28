@@ -15,14 +15,14 @@ export const getActiveCommand = (
 ): { activeCommand: Command , activeCommandIdx: number; } => {
 
     // Iterate through the input words to find the active command
-    for (let i = 0; i < inputWords.length; i++) {
-        const word = inputWords[i];
-        const subCommand = currentCommand.commands.filter(cmd => !cmd.hidden()).find(cmd => cmd.name() === word);
+    for (let wordIndex = 0; wordIndex < inputWords.length; wordIndex++) {
+        const word = inputWords[wordIndex];
+        const subCommand = currentCommand.commands.filter(command => !command.hidden()).find(command => command.name() === word);
         if (!subCommand) continue;
 
         return {
             activeCommand: subCommand,
-            activeCommandIdx: i
+            activeCommandIdx: wordIndex
         };
     }
 

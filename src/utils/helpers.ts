@@ -19,11 +19,11 @@ export const getBashrcFile = () => {
 
 /**
  * Returns the location of the autocomplete file
- * @param bin_name The name of the binary
+ * @param binaryName The name of the binary
  * @returns The location of the autocomplete file
  */
-export function getAutocompleteFile(bin_name: string) {
-    return path.join(getAutocompleteDir(), bin_name);
+export function getAutocompleteFile(binaryName: string) {
+    return path.join(getAutocompleteDir(), binaryName);
 }
 
 /**

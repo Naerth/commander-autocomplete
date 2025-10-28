@@ -9,20 +9,20 @@ import type { Command } from 'commander';
  * @returns 
  */
 export const getAvailableOptions = (remainingWords: string[], activeCommand: Command): string[] => {
-    return activeCommand.options.reduce<string[]>((acc, option) => {
-        if (option.hidden) return acc;
+    return activeCommand.options.reduce<string[]>((availableOptions, option) => {
+        if (option.hidden) return availableOptions;
 
         if (
             (option.short && remainingWords.includes(option.short)) ||
             (option.long && remainingWords.includes(option.long))
         )
-            return acc;
+            return availableOptions;
 
 
-        if (option.short) acc.push(option.short);
-        if (option.long) acc.push(option.long);
+        if (option.short) availableOptions.push(option.short);
+        if (option.long) availableOptions.push(option.long);
 
 
-        return acc;
+        return availableOptions;
     }, []);
 };

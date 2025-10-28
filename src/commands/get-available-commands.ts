@@ -9,6 +9,6 @@ import type { Command } from './command.js';
  */
 export const getAvailableCommands = (activeCommand: Command): string[] => {
     return activeCommand.commands
-        .filter(cmd => !cmd.hidden())
-        .map(cmd => cmd.name());
+        .filter(command => !command.hidden())
+        .map(command => command.name());
 };

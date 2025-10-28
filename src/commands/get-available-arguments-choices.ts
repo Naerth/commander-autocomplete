@@ -14,13 +14,13 @@ export const getAvailableArgumentsChoices = (
     activeCommand: Command,
 ) => {
 
-    return activeCommand.registeredArguments.reduce<string[]>((acc, arg) => {
+    return activeCommand.registeredArguments.reduce<string[]>((availableChoices, argument) => {
 
-        if (!arg.argChoices?.length || arg.argChoices.some(choice => remainingWords.includes(choice)))
-            return acc;
+        if (!argument.argChoices?.length || argument.argChoices.some(choice => remainingWords.includes(choice)))
+            return availableChoices;
 
-        acc.push(...arg.argChoices);
+        availableChoices.push(...argument.argChoices);
 
-        return acc;
+        return availableChoices;
     }, []);
 };
