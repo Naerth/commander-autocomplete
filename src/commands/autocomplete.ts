@@ -5,12 +5,19 @@ import { getAvailableCommandAvailableSuggestions } from './get-available-suggest
 import { getSuggestions } from './get-suggestions.js';
 
 /**
+ * Type for Commander.js action callback arguments.
+ * The last argument is always the Command object.
+ */
+type CommanderActionArgs = [...args: string[], command: Command];
+
+/**
  * Provides autocomplete for command-line interfaces built with the Commander.js library.
- * @param commanderArgs - The arguments passed to the autocomplete function.
+ * @param commanderArgs - The arguments passed from Commander.js action callback.
+ *                        The last argument is always the Command object.
  * @returns A promise that resolves to an array of strings to be used for autocomplete.
  */
-export async function autocomplete(...commanderArgs: any[]): Promise<string[] | undefined> {
-    const command = commanderArgs.pop() as Command;
+export async function autocomplete(...commanderArgs: CommanderActionArgs): Promise<string[] | undefined> {
+    const command = commanderArgs.at(-1) as Command;
     const { parent, args } = command;
 
     const inputWords = args.slice(1); // skip binary
