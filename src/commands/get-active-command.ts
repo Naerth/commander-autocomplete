@@ -6,7 +6,7 @@ import type { Command } from './command.js';
  * @param inputWords - The words input by the user.
  * @param currentCommand - The current command being processed.
  * @param currentCommandIdx - The index of the current command in the input words.
- * @returns 
+ * @returns The active command and its index in the input words.
  */
 export const getActiveCommand = (
     inputWords: string[],
