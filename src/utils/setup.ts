@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { getCompletionBlock, getAutocompleteDir, getBashrcFile, getAutocompleteFile, backupBashRc } from './helpers.js';
+import { getCompletionBlock, getAutocompleteDir, getBashrcFile, getAutocompleteFile, backupBashRc, validateBinName } from './helpers.js';
 import { cleanUpBash } from './cleanup.js';
 
 /**
@@ -31,9 +31,12 @@ complete -F "${bin_name}_completion" ${bin_name}
 /**
  * Create and write autocomplete file
  * @param bin_name name of binary
+ * @throws {Error} If the binary name is invalid
  */
 export function setupBash(bin_name: string) {
-    
+    // Validate bin_name to prevent command injection and path traversal
+    validateBinName(bin_name);
+
     const backupFile = backupBashRc(getBashrcFile());
     console.log(`Backup .bashrc to ${backupFile}`);
 
