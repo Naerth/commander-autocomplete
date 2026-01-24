@@ -13,6 +13,7 @@ const mockReadFileSync = fs.readFileSync as jest.Mock;
 const mockGetAutocompleteFile = helpers.getAutocompleteFile as jest.Mock;
 const mockGetBashrcFile = helpers.getBashrcFile as jest.Mock;
 const mockGetCompletionBlock = helpers.getCompletionBlock as jest.Mock;
+const mockBackupBashRc = helpers.backupBashRc as jest.Mock;
 
 
 
@@ -27,6 +28,7 @@ describe('cleanUpBash', () => {
         mockGetAutocompleteFile.mockReset();
         mockGetBashrcFile.mockReset();
         mockGetCompletionBlock.mockReset();
+        mockBackupBashRc.mockReset();
     });
 
     const bin_name = 'test-bin';
@@ -101,5 +103,17 @@ describe('cleanUpBash', () => {
         expect(() => cleanUpBash(bin_name)).not.toThrow();
         expect(mockUnlinkSync).not.toHaveBeenCalled();
         expect(mockReadFileSync).not.toHaveBeenCalled();
+    });
+
+    it('should not create backup when backup option is false', async () => {
+        mockExistsSync.mockReturnValue(true);
+        mockGetAutocompleteFile.mockReturnValue(completionFile);
+        mockGetBashrcFile.mockReturnValue(bashRcFile);
+        mockGetCompletionBlock.mockReturnValue(completionBlock);
+        mockReadFileSync.mockReturnValue(bashrcContent);
+
+        cleanUpBash(bin_name, false);
+
+        expect(mockBackupBashRc).not.toHaveBeenCalled();
     });
 });

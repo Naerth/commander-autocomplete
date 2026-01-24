@@ -48,6 +48,15 @@ describe('helpers', () => {
         expect(completionBlock).toBe(`source ~/.autocomplete/example\n`);
     });
 
+    it('should keep path unchanged when not in home directory', () => {
+        mockHomedir.mockReturnValue('/home/user');
+
+        const completionFile = '/opt/custom/path';
+        const completionBlock = getCompletionBlock(completionFile);
+
+        expect(completionBlock).toBe(`source /opt/custom/path\n`);
+    });
+
     it('should copy the bashrc file to a backup file', () => {
 
         mockFsCopyFileSync.mockImplementation(() => { });
