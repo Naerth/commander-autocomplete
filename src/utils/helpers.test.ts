@@ -1,6 +1,6 @@
 import os from 'os';
 import fs from 'fs';
-import { getAutocompleteFile, getCompletionBlock, getBashrcFile, getAutocompleteDir, backupBashRc } from './helpers.js';
+import { getAutocompleteFile, getCompletionBlock, getBashrcFile, getAutocompleteDir, backupBashRc, validateBinName } from './helpers.js';
 
 jest.mock('fs');
 jest.mock('os');
@@ -59,4 +59,53 @@ describe('helpers', () => {
         expect(backupBashRcFile).toBe(`${bashRcFile}.1234567890`);
     });
 
+});
+
+describe('validateBinName', () => {
+    it('should accept valid binary names', () => {
+        expect(() => validateBinName('myapp')).not.toThrow();
+        expect(() => validateBinName('my-app')).not.toThrow();
+        expect(() => validateBinName('my_app')).not.toThrow();
+        expect(() => validateBinName('MyApp123')).not.toThrow();
+        expect(() => validateBinName('_private')).not.toThrow();
+        expect(() => validateBinName('app2')).not.toThrow();
+    });
+
+    it('should reject empty or non-string binary names', () => {
+        expect(() => validateBinName('')).toThrow('Binary name is required and must be a string');
+        expect(() => validateBinName(null as any)).toThrow('Binary name is required and must be a string');
+        expect(() => validateBinName(undefined as any)).toThrow('Binary name is required and must be a string');
+        expect(() => validateBinName(123 as any)).toThrow('Binary name is required and must be a string');
+    });
+
+    it('should reject binary names that are too long', () => {
+        const longName = 'a'.repeat(256);
+        expect(() => validateBinName(longName)).toThrow('Binary name exceeds maximum length of 255 characters');
+    });
+
+    it('should reject binary names with path traversal attempts', () => {
+        expect(() => validateBinName('../etc/passwd')).toThrow('Invalid binary name');
+        expect(() => validateBinName('../../root')).toThrow('Invalid binary name');
+        expect(() => validateBinName('foo/bar')).toThrow('Invalid binary name');
+    });
+
+    it('should reject binary names with command injection characters', () => {
+        expect(() => validateBinName('foo; rm -rf /')).toThrow('Invalid binary name');
+        expect(() => validateBinName('foo && cat /etc/passwd')).toThrow('Invalid binary name');
+        expect(() => validateBinName('foo | cat')).toThrow('Invalid binary name');
+        expect(() => validateBinName('foo`whoami`')).toThrow('Invalid binary name');
+        expect(() => validateBinName('$(whoami)')).toThrow('Invalid binary name');
+        expect(() => validateBinName('foo"bar')).toThrow('Invalid binary name');
+        expect(() => validateBinName("foo'bar")).toThrow('Invalid binary name');
+    });
+
+    it('should reject binary names starting with numbers or hyphens', () => {
+        expect(() => validateBinName('123app')).toThrow('Invalid binary name');
+        expect(() => validateBinName('-myapp')).toThrow('Invalid binary name');
+    });
+
+    it('should reject binary names with spaces', () => {
+        expect(() => validateBinName('my app')).toThrow('Invalid binary name');
+        expect(() => validateBinName('my\tapp')).toThrow('Invalid binary name');
+    });
 });
