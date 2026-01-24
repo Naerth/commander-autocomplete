@@ -72,6 +72,30 @@ describe('Command', () => {
         expect(cleanupFn).toThrow('Command name is required to enable autocomplete');
     });
 
+    test('should throw error if setup is called with no name', () => {
+        const cmd = new Command(); // No name provided
+        const setupFn = () => (cmd as any).setup(); // Force call to private method
+
+        expect(setupFn).toThrow('Command name is required to enable autocomplete');
+    });
+
+    test('should not add duplicate options when parse is called multiple times', () => {
+        const cmd = new Command('foo');
+
+        jest.spyOn(process, 'exit').mockImplementation(() => (null as never));
+        jest.spyOn(CommanderCommand.prototype, 'parse').mockImplementation(() => cmd);
+
+        // Parse twice
+        cmd.parse(['node', 'foo']);
+        const optionsCountAfterFirst = cmd.options.length;
+
+        cmd.parse(['node', 'foo']);
+        const optionsCountAfterSecond = cmd.options.length;
+
+        // Options count should remain the same
+        expect(optionsCountAfterSecond).toBe(optionsCountAfterFirst);
+    });
+
     test('parseAsync should call enableAutocomplete and then parseAsync', async () => {
         const cmd = new Command('foo');
         const spy = jest.spyOn(Command.prototype as any, 'enableAutocomplete');

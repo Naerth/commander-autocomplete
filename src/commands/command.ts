@@ -37,6 +37,12 @@ export class Command extends CommanderCommand {
     private autocompleteHandler?: AutocompleteHandler;
 
     /**
+     * Flag to track if autocomplete has been enabled.
+     * @internal
+     */
+    private autocompleteEnabled: boolean = false;
+
+    /**
      * Gets the hidden status of the command.
      * @returns {boolean} The hidden status of the command.
      */
@@ -93,9 +99,11 @@ export class Command extends CommanderCommand {
     /**
      * Sets up the autocomplete for the program.
      * @internal
-     * @throws {Error} Throws an error if the name is not provided.
+     * @throws {Error} Throws an error if the name is not provided or invalid.
      */
     private setup() {
+        if (!this.name())
+            throw new Error("Command name is required to enable autocomplete");
         setupBash(this.name());
         process.exit(0);
     }
@@ -103,7 +111,7 @@ export class Command extends CommanderCommand {
     /**
      * Cleans up the autocomplete for the program.
      * @internal
-     * @throws {Error} Throws an error if the name is not provided.
+     * @throws {Error} Throws an error if the name is not provided or invalid.
      */
     private cleanup() {
         if (!this.name())
@@ -117,6 +125,10 @@ export class Command extends CommanderCommand {
      * @internal
      */
     private enableAutocomplete(argv?: readonly string[] | undefined, options?: ParseOptions | undefined) {
+
+        // Prevent duplicate initialization
+        if (this.autocompleteEnabled) return;
+        this.autocompleteEnabled = true;
 
         this.addOption(setupOption);
         this.addOption(cleanupOption);
@@ -135,7 +147,7 @@ export class Command extends CommanderCommand {
             .command("completion", { hidden: true })
             .allowUnknownOption(true)
             .allowExcessArguments(true)
-            .action(async (...args: any[]) => {
+            .action(async (...args: [...string[], Command]) => {
                 const words = await autocomplete(...args);
                 if (words) console.log(words.join(" "));
             });
