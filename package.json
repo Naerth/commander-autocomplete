@@ -46,7 +46,7 @@
         "posttest": "bun ./scripts/generate-coverage-badge.ts"
     },
     "devDependencies": {
-        "@types/bun": "^1.3.6",
+        "@types/bun": "^1.4.3",
         "@types/jest": "^30.0.0",
         "@types/node": "^26.6.5",
         "jest": "^30.5.2",
