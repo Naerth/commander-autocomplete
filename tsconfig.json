@@ -1,20 +1,26 @@
 {
-  "compilerOptions": {
-    "lib": ["ESNext"],
-    "module": "esnext",
-    "target": "esnext",
-    "moduleResolution": "node",
-    "moduleDetection": "force",
-    "incremental": false,
-    "strict": true,
-    "downlevelIteration": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true
-  },
-  "include": [
-    "./src/**/*",
-    "./test/**/*"
-  ]
+    "compilerOptions": {
+        "lib": [
+            "ESNext"
+        ],
+        "module": "esnext",
+        "target": "esnext",
+        "moduleResolution": "bundler",
+        "moduleDetection": "force",
+        "incremental": false,
+        "strict": true,
+        "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "esModuleInterop": true,
+        "types": [
+            "bun",
+            "node",
+            "jest"
+        ]
+    },
+    "include": [
+        "./src/**/*",
+        "./test/**/*"
+    ]
 }
