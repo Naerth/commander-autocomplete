@@ -8,9 +8,10 @@ updates:
       - "dependencies"
     versioning-strategy: increase
     open-pull-requests-limit: 10
-    dev-deps:
-      dependency-type: "development"
-      update-types: ["minor", "patch"]
-    all-minor-patch:
-      patterns: ["*"]
-      update-types: ["minor", "patch"]
+    groups:
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
