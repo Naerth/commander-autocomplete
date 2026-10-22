@@ -6,4 +6,11 @@ updates:
       interval: "daily" # tu peux mettre daily pour voir vite le résultat
     labels:
       - "dependencies"
-    open-pull-requests-limit: 3
+    versioning-strategy: increase
+    open-pull-requests-limit: 10
+    dev-deps:
+      dependency-type: "development"
+      update-types: ["minor", "patch"]
+    all-minor-patch:
+      patterns: ["*"]
+      update-types: ["minor", "patch"]
