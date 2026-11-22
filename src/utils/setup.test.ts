@@ -1,63 +1,66 @@
 import fs from 'fs';
-import { setupBash } from './setup';
-import { getCompletionBlock, getAutocompleteDir, getBashrcFile, getAutocompleteFile } from './helpers';
-import { cleanUpBash } from './cleanup';
-
-jest.mock('fs');
-jest.mock('./helpers');
-jest.mock('./cleanup');
-
-const mockFsMkdirSync = fs.mkdirSync as jest.Mock;
-const mockFsAppendFileSync = fs.appendFileSync as jest.Mock;
-
-const mockGetAutoCompleteDir = getAutocompleteDir as jest.Mock;
-const mockGetAutoCompleteFile = getAutocompleteFile as jest.Mock;
-const mockGetBashrcFile = getBashrcFile as jest.Mock;
-const mockGetCompletionBlock = getCompletionBlock as jest.Mock;
-
-const mockCleanUpBash = cleanUpBash as jest.Mock;
+import os from 'os';
+import path from 'path';
+import { setupBash, generateBashTemplate } from './setup';
 
 describe('setupBash', () => {
-    beforeEach(() => {
-        jest.spyOn(console, 'log').mockImplementation(() => { });
-        jest.clearAllMocks();
-    });
-
     const binName = 'example';
+    let home: string;
+    let bashrc: string;
+    let completionFile: string;
 
-    it('should call cleanUpBash with the correct bin name', () => {
-        setupBash(binName);
-        expect(mockCleanUpBash).toHaveBeenCalledWith(binName, false);
+    const backups = () => fs.readdirSync(home).filter(file => file.startsWith('.bashrc.'));
+
+    beforeEach(() => {
+        home = fs.mkdtempSync(path.join(os.tmpdir(), 'setup-test-'));
+        bashrc = path.join(home, '.bashrc');
+        completionFile = path.join(home, '.autocomplete', binName);
+        jest.spyOn(os, 'homedir').mockReturnValue(home);
+        jest.spyOn(console, 'log').mockImplementation(() => { });
     });
 
-    it('should create autocomplete directory with correct permissions', () => {
-        const autocompleteDir = '/mocked/path';
-        mockGetAutoCompleteDir.mockReturnValue(autocompleteDir);
-
-        setupBash(binName);
-
-        expect(mockFsMkdirSync).toHaveBeenCalledWith(autocompleteDir, { mode: 0o755, recursive: true });
+    afterEach(() => {
+        jest.restoreAllMocks();
+        fs.rmSync(home, { recursive: true, force: true });
     });
 
-    it('should write the completion file with the correct content', () => {
-        const completionFile = '/mocked/path/completion';
-        mockGetAutoCompleteFile.mockReturnValue(completionFile);
-
-        setupBash(binName);
-
-        expect(mockFsAppendFileSync).toHaveBeenCalledWith(completionFile, expect.stringContaining(`function ${binName}_comp`));
+    it('should throw on invalid binary name', () => {
+        expect(() => setupBash('foo; rm -rf /')).toThrow('Invalid binary name');
     });
 
-    it('should write to .bashrc with the correct completion block', () => {
-        const bashrcFile = '/mocked/path/.bashrc';
-        const completionFile = '/mocked/path/completion';
-        const completionBlock = 'completion block content';
-        mockGetBashrcFile.mockReturnValue(bashrcFile);
-        mockGetAutoCompleteFile.mockReturnValue(completionFile);
-        mockGetCompletionBlock.mockReturnValue(completionBlock);
+    it('should write the completion file', () => {
+        setupBash(binName);
+        expect(fs.readFileSync(completionFile, 'utf-8')).toBe(generateBashTemplate(binName));
+    });
 
+    it('should create .bashrc without backup when it does not exist', () => {
+        setupBash(binName);
+        expect(fs.readFileSync(bashrc, 'utf-8')).toBe('source ~/.autocomplete/example\n');
+        expect(backups()).toHaveLength(0);
+    });
+
+    it('should append to an existing .bashrc and back it up', () => {
+        fs.writeFileSync(bashrc, 'export A=1\n');
+        setupBash(binName);
+        expect(fs.readFileSync(bashrc, 'utf-8')).toBe('export A=1\nsource ~/.autocomplete/example\n');
+        expect(backups()).toHaveLength(1);
+        expect(fs.readFileSync(path.join(home, backups()[0]), 'utf-8')).toBe('export A=1\n');
+    });
+
+    it('should not glue the source line to an unterminated last line', () => {
+        fs.writeFileSync(bashrc, 'export A=1');
+        setupBash(binName);
+        expect(fs.readFileSync(bashrc, 'utf-8')).toBe('export A=1\nsource ~/.autocomplete/example\n');
+    });
+
+    it('should be idempotent: no duplicate line, no extra backup, completion file overwritten', () => {
+        fs.writeFileSync(bashrc, 'export A=1\n');
+        setupBash(binName);
+        fs.writeFileSync(completionFile, 'outdated');
         setupBash(binName);
 
-        expect(mockFsAppendFileSync).toHaveBeenCalledWith(bashrcFile, completionBlock);
+        expect(fs.readFileSync(bashrc, 'utf-8')).toBe('export A=1\nsource ~/.autocomplete/example\n');
+        expect(backups()).toHaveLength(1);
+        expect(fs.readFileSync(completionFile, 'utf-8')).toBe(generateBashTemplate(binName));
     });
 });

@@ -13,6 +13,11 @@ const cleanupOption = new Option("--cleanup", "cleanup completion mode");
 setupOption.hidden = true;
 cleanupOption.hidden = true;
 
+/**
+ * Name of the hidden sub-command called by the shell to get suggestions.
+ */
+const COMPLETION_COMMAND = "completion";
+
 
 export class Command extends CommanderCommand {
     /**
@@ -84,7 +89,8 @@ export class Command extends CommanderCommand {
     * @override Enable autocomplete
     */
     public parse(argv?: readonly string[] | undefined, options?: ParseOptions | undefined): this {
-        this.enableAutocomplete(argv, options);
+        const completionArgs = this.enableAutocomplete(argv, options);
+        if (completionArgs) return super.parse(completionArgs, { from: 'user' });
         return super.parse(argv, options);
     }
 
@@ -92,7 +98,8 @@ export class Command extends CommanderCommand {
      * @override Enable autocomplete 
      */
     public async parseAsync(argv?: readonly string[] | undefined, options?: ParseOptions | undefined): Promise<this> {
-        this.enableAutocomplete(argv, options);
+        const completionArgs = this.enableAutocomplete(argv, options);
+        if (completionArgs) return super.parseAsync(completionArgs, { from: 'user' });
         return super.parseAsync(argv, options);
     }
 
@@ -123,33 +130,44 @@ export class Command extends CommanderCommand {
     /**
      * Enables autocomplete functionality for the program.
      * @internal
+     * @returns The arguments to parse when the shell asks for completions, otherwise undefined.
+     *          The words of the command line being completed are placed after `--`,
+     *          so they are never interpreted as options (`--help`, `--version`, `--setup`...).
      */
-    private enableAutocomplete(argv?: readonly string[] | undefined, options?: ParseOptions | undefined) {
-
-        // Prevent duplicate initialization
-        if (this.autocompleteEnabled) return;
-        this.autocompleteEnabled = true;
-
-        this.addOption(setupOption);
-        this.addOption(cleanupOption);
+    private enableAutocomplete(argv?: readonly string[] | undefined, options?: ParseOptions | undefined): string[] | undefined {
 
         const userArgs = super._prepareUserArgs(argv, options);
+        const isCompletion = userArgs[0] === COMPLETION_COMMAND;
+
+        // Prevent duplicate initialization
+        if (!this.autocompleteEnabled) {
+            this.autocompleteEnabled = true;
+
+            this.addOption(setupOption);
+            this.addOption(cleanupOption);
+
+            this
+                .command(COMPLETION_COMMAND, { hidden: true })
+                .helpOption(false)
+                .allowUnknownOption(true)
+                .allowExcessArguments(true)
+                .action(async (...args: [...string[], Command]) => {
+                    const words = await autocomplete(...args);
+                    // One suggestion per line, so that suggestions can contain spaces
+                    if (words) console.log(words.join("\n"));
+                });
+        }
+
+        if (isCompletion) {
+            const words = userArgs.slice(1);
+            if (words[0] === '--') words.shift();
+            return [COMPLETION_COMMAND, '--', ...words];
+        }
 
         if (userArgs.includes(`--${setupOption.name()}`))
             this.setup();
 
-
         if (userArgs.includes(`--${cleanupOption.name()}`))
             this.cleanup();
-
-        /* istanbul ignore next */
-        this
-            .command("completion", { hidden: true })
-            .allowUnknownOption(true)
-            .allowExcessArguments(true)
-            .action(async (...args: [...string[], Command]) => {
-                const words = await autocomplete(...args);
-                if (words) console.log(words.join(" "));
-            });
     }
 }

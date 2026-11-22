@@ -65,4 +65,28 @@ describe('getActiveCommand', () => {
         expect(result.activeCommand).toBe(rootCmd);
         expect(result.activeCommandIdx).toBe(2);
     });
+
+    it('goes down to nested subcommands', () => {
+        const program = createProgram();
+        const hello = program.command('hello');
+        const world = hello.command('world');
+        const deep = world.command('deep');
+
+        expect(getActiveCommand(['hello', 'world', ''], program, -1)).toEqual({ activeCommand: world, activeCommandIdx: 1 });
+        expect(getActiveCommand(['hello', '--debug', 'world', 'deep'], program, -1)).toEqual({ activeCommand: deep, activeCommandIdx: 3 });
+    });
+
+    it('does not jump to a nested subcommand whose parent was not typed', () => {
+        const program = createProgram();
+        program.command('hello').command('world');
+
+        expect(getActiveCommand(['world'], program, -1)).toEqual({ activeCommand: program, activeCommandIdx: -1 });
+    });
+
+    it('matches subcommands by alias', () => {
+        const program = createProgram();
+        const hello = program.command('hello').alias('hi');
+
+        expect(getActiveCommand(['hi'], program, -1)).toEqual({ activeCommand: hello, activeCommandIdx: 0 });
+    });
 });

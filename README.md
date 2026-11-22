@@ -32,8 +32,6 @@ commander-autocomplete supports both Javascript and TypeScript.
 
 ```typescript
 
-const { program } = require("@naerth/commander-autocomplete");
-// or
 import { program } from "@naerth/commander-autocomplete";
 
 program.name("example");
@@ -63,8 +61,6 @@ world
 
 ```typescript
 
-const { program } = require("@naerth/commander-autocomplete");
-// or
 import { program } from "@naerth/commander-autocomplete";
 
 program.name("example");
@@ -96,8 +92,6 @@ $ example hello<TAB>
 > **Note:** `Argument` and `Option` should be imported from `commander`, not from `@naerth/commander-autocomplete`.
 
 ```typescript
-const { program } = require("@naerth/commander-autocomplete");
-// or
 import { program } from "@naerth/commander-autocomplete";
 import { Argument, Option } from 'commander';
 
@@ -137,8 +131,6 @@ You can provide dynamic autocomplete suggestions for a command by using the `.au
 
 ```typescript
 
-const { program } = require("@naerth/commander-autocomplete");
-// or
 import { program } from "@naerth/commander-autocomplete";
 
 program.name("example");
