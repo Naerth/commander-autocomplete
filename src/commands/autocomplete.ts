@@ -26,8 +26,9 @@ export async function autocomplete(...commanderArgs: CommanderActionArgs): Promi
 
     /**
      * Get the active command based on the input words.
+     * -1 means no sub-command was typed: every input word belongs to the root command.
      */
-    const { activeCommand, activeCommandIdx } = getActiveCommand(inputWords, parent ?? command, 0);
+    const { activeCommand, activeCommandIdx } = getActiveCommand(inputWords, parent ?? command, -1);
 
     /**
      * Get the active option

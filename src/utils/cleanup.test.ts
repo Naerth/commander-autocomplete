@@ -1,119 +1,85 @@
 import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { cleanUpBash } from './cleanup';
-import * as helpers from './helpers.js';
-
-jest.mock('fs');
-jest.mock('./helpers');
-
-const mockExistsSync = fs.existsSync as jest.Mock;
-const mockUnlinkSync = fs.unlinkSync as jest.Mock;
-const mockWriteFileSync = fs.writeFileSync as jest.Mock;
-const mockReadFileSync = fs.readFileSync as jest.Mock;
-
-const mockGetAutocompleteFile = helpers.getAutocompleteFile as jest.Mock;
-const mockGetBashrcFile = helpers.getBashrcFile as jest.Mock;
-const mockGetCompletionBlock = helpers.getCompletionBlock as jest.Mock;
-const mockBackupBashRc = helpers.backupBashRc as jest.Mock;
-
-
 
 describe('cleanUpBash', () => {
+    const binName = 'test-bin';
+    let home: string;
+    let bashrc: string;
+    let completionFile: string;
+
+    const backups = () => fs.readdirSync(home).filter(file => file.startsWith('.bashrc.'));
 
     beforeEach(() => {
+        home = fs.mkdtempSync(path.join(os.tmpdir(), 'cleanup-test-'));
+        bashrc = path.join(home, '.bashrc');
+        completionFile = path.join(home, '.autocomplete', binName);
+        fs.mkdirSync(path.dirname(completionFile));
+        jest.spyOn(os, 'homedir').mockReturnValue(home);
         jest.spyOn(console, 'log').mockImplementation(() => { });
-        mockExistsSync.mockReset();
-        mockUnlinkSync.mockReset();
-        mockReadFileSync.mockReset();
-        mockWriteFileSync.mockReset();
-        mockGetAutocompleteFile.mockReset();
-        mockGetBashrcFile.mockReset();
-        mockGetCompletionBlock.mockReset();
-        mockBackupBashRc.mockReset();
     });
 
-    const bin_name = 'test-bin';
-    const completionFile = '/path/to/completion/file';
-    const bashRcFile = '/path/to/bashrc/file';
-    const bashrcContent = 'some content\ncompletion block\nsome other content';
-    const completionBlock = 'completion block';
-    // const newBashrcContent = 'some content\nsome other content';
-
-    it('should remove the completion file if it exists and should overide bashrc file', async () => {
-
-        mockExistsSync.mockReturnValue(true);
-        mockGetAutocompleteFile.mockReturnValue(completionFile);
-        mockWriteFileSync.mockImplementation(() => { });
-        mockGetBashrcFile.mockReturnValue(bashRcFile);
-        mockGetCompletionBlock.mockReturnValue(completionBlock);
-        mockReadFileSync.mockReturnValue(bashrcContent);
-
-        cleanUpBash(bin_name);
-
-        // existsSync is called twice: once for completion file, once for bashrc
-        expect(mockExistsSync).toHaveBeenCalledTimes(2);
-        expect(mockExistsSync).toHaveBeenNthCalledWith(1, completionFile);
-        expect(mockExistsSync).toHaveBeenNthCalledWith(2, bashRcFile);
-        expect(mockGetBashrcFile).toHaveBeenCalledTimes(1);
-        expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
-        expect(mockUnlinkSync).toHaveBeenCalledWith(completionFile);
-        expect(mockReadFileSync).toHaveBeenCalledWith(bashRcFile, { encoding: 'utf-8' });
+    afterEach(() => {
+        jest.restoreAllMocks();
+        fs.rmSync(home, { recursive: true, force: true });
     });
 
-
-    it('should keep bashrc intact', async () => {
-
-
-        mockExistsSync.mockReturnValue(true);
-        mockGetAutocompleteFile.mockReturnValue(completionFile);
-        mockWriteFileSync.mockImplementation(() => { });
-        mockGetBashrcFile.mockReturnValue(bashRcFile);
-        mockGetCompletionBlock.mockReturnValue("completion block2");
-        mockReadFileSync.mockReturnValue(bashrcContent);
-
-        cleanUpBash(bin_name);
-
-
-        expect(mockWriteFileSync).not.toHaveBeenCalled()
+    it('should throw on invalid binary name', () => {
+        expect(() => cleanUpBash('../etc')).toThrow('Invalid binary name');
     });
 
-    it('should handle missing .bashrc file gracefully', async () => {
-        // First call: completion file exists, Second call: bashrc doesn't exist
-        mockExistsSync
-            .mockReturnValueOnce(true)  // completion file exists
-            .mockReturnValueOnce(false); // bashrc doesn't exist
-        mockGetAutocompleteFile.mockReturnValue(completionFile);
-        mockGetBashrcFile.mockReturnValue(bashRcFile);
-        mockUnlinkSync.mockImplementation(() => { });
+    it('should remove the completion file and its line in .bashrc, with a backup', () => {
+        const content = 'some content\nsource ~/.autocomplete/test-bin\nsome other content\n';
+        fs.writeFileSync(completionFile, 'completion');
+        fs.writeFileSync(bashrc, content);
 
-        cleanUpBash(bin_name);
+        cleanUpBash(binName);
 
-        // Should still remove completion file
-        expect(mockUnlinkSync).toHaveBeenCalledWith(completionFile);
-        // Should not try to read or write bashrc
-        expect(mockReadFileSync).not.toHaveBeenCalled();
-        expect(mockWriteFileSync).not.toHaveBeenCalled();
+        expect(fs.existsSync(completionFile)).toBe(false);
+        expect(fs.readFileSync(bashrc, 'utf-8')).toBe('some content\nsome other content\n');
+        expect(backups()).toHaveLength(1);
+        expect(fs.readFileSync(path.join(home, backups()[0]), 'utf-8')).toBe(content);
     });
 
-    it('should not crash when both completion file and bashrc are missing', async () => {
-        mockExistsSync.mockReturnValue(false);
-        mockGetAutocompleteFile.mockReturnValue(completionFile);
-        mockGetBashrcFile.mockReturnValue(bashRcFile);
-
-        // Should not throw
-        expect(() => cleanUpBash(bin_name)).not.toThrow();
-        expect(mockUnlinkSync).not.toHaveBeenCalled();
-        expect(mockReadFileSync).not.toHaveBeenCalled();
+    it('should remove the line even when it is the unterminated last line', () => {
+        fs.writeFileSync(bashrc, 'some content\nsource ~/.autocomplete/test-bin');
+        cleanUpBash(binName);
+        expect(fs.readFileSync(bashrc, 'utf-8')).toBe('some content');
     });
 
-    it('should not create backup when backup option is false', async () => {
-        mockExistsSync.mockReturnValue(true);
-        mockGetAutocompleteFile.mockReturnValue(completionFile);
-        mockGetBashrcFile.mockReturnValue(bashRcFile);
-        mockGetCompletionBlock.mockReturnValue(completionBlock);
-        mockReadFileSync.mockReturnValue(bashrcContent);
+    it('should keep lines of other binaries', () => {
+        const content = 'source ~/.autocomplete/test-bin2\nsource ~/.autocomplete/other\n';
+        fs.writeFileSync(bashrc, content);
+        cleanUpBash(binName);
+        expect(fs.readFileSync(bashrc, 'utf-8')).toBe(content);
+    });
 
-        cleanUpBash(bin_name, false);
+    it('should keep .bashrc intact and not back it up when there is nothing to remove', () => {
+        fs.writeFileSync(bashrc, 'some content\n');
+        const write = jest.spyOn(fs, 'writeFileSync');
 
-        expect(mockBackupBashRc).not.toHaveBeenCalled();
+        cleanUpBash(binName);
+
+        expect(write).not.toHaveBeenCalled();
+        expect(backups()).toHaveLength(0);
+    });
+
+    it('should handle missing .bashrc file gracefully', () => {
+        fs.writeFileSync(completionFile, 'completion');
+        expect(() => cleanUpBash(binName)).not.toThrow();
+        expect(fs.existsSync(completionFile)).toBe(false);
+        expect(fs.existsSync(bashrc)).toBe(false);
+    });
+
+    it('should not crash when both completion file and .bashrc are missing', () => {
+        expect(() => cleanUpBash(binName)).not.toThrow();
+    });
+
+    it('should not create backup when backup option is false', () => {
+        fs.writeFileSync(bashrc, 'source ~/.autocomplete/test-bin\n');
+        cleanUpBash(binName, false);
+        expect(fs.readFileSync(bashrc, 'utf-8')).toBe('');
+        expect(backups()).toHaveLength(0);
     });
 });

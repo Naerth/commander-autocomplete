@@ -1,8 +1,8 @@
 {
     "name": "@naerth/commander-autocomplete",
     "version": "1.0.0",
-    "main": "./dist/node/index.js",
-    "module": "./dist/node/index.js",
+    "main": "./dist/node/commander-autocomplete.js",
+    "module": "./dist/node/commander-autocomplete.js",
     "types": "./dist/types/index.d.ts",
     "type": "module",
     "description": "Small utility that add autocomplete for commander",
@@ -19,19 +19,19 @@
         "name": "Naerth",
         "url": "https://github.com/Naerth"
     },
-    "license": "MIT",
+    "license": "Apache-2.0",
+    "engines": {
+        "node": ">=20"
+    },
     "exports": {
         "types": "./dist/types/index.d.ts",
-        "import": "./dist/node/commander-autocomplete.js",
         "bun": "./dist/bun/commander-autocomplete.js",
-        "node": "./dist/node/commander-autocomplete.js",
         "default": "./dist/node/commander-autocomplete.js"
     },
     "files": [
         "./dist/**/*",
-        "./package.json",
-        "./tsconfig.json",
-        "./README.md"
+        "./README.md",
+        "./NOTICE"
     ],
     "scripts": {
         "yarn": "bun install --yarn",
@@ -52,10 +52,10 @@
         "@types/node": "^26.6.6",
         "jest": "^30.5.2",
         "ts-node": "^10.9.2",
-        "ts-jest": "^29.4.15"
+        "ts-jest": "^29.4.15",
+        "typescript": "^5.9.3"
     },
     "peerDependencies": {
-        "commander": "^14",
-        "typescript": "^5.9.3"
+        "commander": "^14"
     }
 }

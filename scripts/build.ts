@@ -28,6 +28,7 @@ const buildProject = async (target: Target) => {
     else {
         console.error(`Build for ${target} failed`);
         buildStatus.logs.forEach(log => console.error(log));
+        process.exit(1);
     }
 };
 
